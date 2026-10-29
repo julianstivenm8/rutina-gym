@@ -40,3 +40,9 @@ La fuerza solo define tren superior/inferior. No se agregaron ejercicios concret
 ## Validación
 
 Las pruebas cubren ambas rutinas, la transición a lunes a las 05:00 UTC, semanas ISO en el cambio de año, semana 53 → 1, meses y ausencia de ancla en octubre. Revisión visual y de selección de los siete días en navegador a 390 px y 834 px, con navegación de teclado y sin errores de consola.
+
+## Estilos con Tailwind CSS
+
+Tailwind CSS 4 se integra mediante `@tailwindcss/postcss` en `postcss.config.mjs`. Los colores y las fuentes del prototipo están disponibles como utilidades: `bg-paper`, `text-ink`, `text-sage`, `bg-sage-dark`, `font-sans` y `font-heading`.
+
+Los componentes usan utilidades de Tailwind para la estructura. Los estilos específicos y sus variantes responsive permanecen en la capa `components` de `src/app/globals.css`, por lo que las utilidades pueden sobrescribirlos. El reset original se conserva en la capa `base`, sin Preflight, para mantener el diseño existente. La detección de clases se limita a `src/`.

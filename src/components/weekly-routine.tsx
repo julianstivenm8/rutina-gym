@@ -9,8 +9,8 @@ type ViewState = { week: WeekModel; selectedIndex: number } | null;
 function SessionContent({ activity }: { activity: Activity }) {
   if (activity.id === "zone2") {
     return <div className="session-facts">
-      <div className="session-fact"><ClockIcon size={22} /><div><span>Duración</span><strong>45–60 <small>minutos</small></strong></div></div>
-      <div className="session-fact"><ActivityIcon activity="hiit" size={25} /><div><span>Tipo de sesión</span><strong>Cardio continuo</strong></div></div>
+      <div className="session-fact flex items-center"><ClockIcon size={22} /><div><span>Duración</span><strong>45–60 <small>minutos</small></strong></div></div>
+      <div className="session-fact flex items-center"><ActivityIcon activity="hiit" size={25} /><div><span>Tipo de sesión</span><strong>Cardio continuo</strong></div></div>
     </div>;
   }
   if (activity.id === "hiit") {
@@ -85,31 +85,20 @@ export function WeeklyRoutine() {
   const selectedIsToday = selectedDay?.dateKey === week?.todayKey;
 
   return (
-    <div className="app-shell">
+    <div className="app-shell mx-auto">
       <a className="skip-link" href="#week">Ir a la semana</a>
-      <header className="site-header">
-        <a className="brand" href="/" aria-label="Mi rutina, inicio">
-          <span className="brand-mark"><DumbbellIcon size={26} /></span>
+      <header className="site-header flex items-center justify-between">
+        <a className="brand inline-flex items-center gap-[10px] no-underline" href="/" aria-label="Mi rutina, inicio">
+          <span className="brand-mark grid place-items-center bg-sage-dark text-paper"><DumbbellIcon size={26} /></span>
           <span>mi rutina<span className="brand-period">.</span></span>
         </a>
-        <div className="header-note"><ActivityIcon activity="rest" size={23} /><span>Constancia, a tu ritmo.</span></div>
+        <div className="header-note flex items-center text-sage"><ActivityIcon activity="rest" size={23} /><span>Constancia, a tu ritmo.</span></div>
       </header>
 
       <main>
-        <section className="intro" aria-labelledby="page-title">
-          <div>
-            <h1 id="page-title">Fuerza + cardio</h1>
-            <p>Tu entrenamiento, un día a la vez.</p>
-          </div>
-          <div className="date-label">
-            <CalendarIcon size={21} />
-            <div><span>Esta semana</span><strong>{week?.rangeLabel ?? "Lunes a domingo"}</strong></div>
-          </div>
-        </section>
-
         <section className={"week-sheet routine-" + (week?.routine ?? 1)} id="week" aria-label="Calendario de la semana actual" aria-busy={!view}>
           {week && view ? <>
-            <div className="week-heading">
+            <div className="week-heading flex justify-between">
               <div className="routine-overview">
                 <span className="routine-badge">Rutina {week.routine}</span>
                 <p><strong>{week.routine === 1 ? "2" : "1"}</strong> de tren superior <span className="focus-divider">/</span> <strong>{week.routine === 1 ? "1" : "2"}</strong> de tren inferior</p>
@@ -117,7 +106,7 @@ export function WeeklyRoutine() {
               <div className="week-number">Semana {week.isoWeek}<span className="parity">{week.isoWeek % 2 === 0 ? "Par" : "Impar"}</span></div>
             </div>
 
-            <div className="week-days" role="group" aria-label="Elige un día para consultar su entrenamiento">
+            <div className="week-days grid" role="group" aria-label="Elige un día para consultar su entrenamiento">
               {week.days.map((day, index) => {
                 const activity = ACTIVITIES[day.activityId];
                 const isToday = day.dateKey === week.todayKey;
@@ -133,7 +122,7 @@ export function WeeklyRoutine() {
                   onKeyDown={(event) => handleDayKey(event, index)}
                 >
                   <span className="day-top"><span className="day-name">{day.name}</span>{isToday && <span className="today-tag"><span />Hoy</span>}</span>
-                  <span className="day-number">{day.dayNumber.toString().padStart(2, "0")}</span>
+                  <span className="day-number tabular-nums">{day.dayNumber.toString().padStart(2, "0")}</span>
                   <span className={"activity-circle tone-" + activity.color}><ActivityIcon activity={day.activityId} size={54} /></span>
                   <span className="day-activity">{activity.calendarTitle}</span>
                   <span className="day-meta">{activity.id === "upper" || activity.id === "lower" ? activity.category : activity.calendarMeta}</span>
@@ -157,7 +146,7 @@ export function WeeklyRoutine() {
           </section>
 
           <aside className="cycle-panel" aria-labelledby="cycle-title">
-            <div className="cycle-title"><CycleIcon size={21} /><h2 id="cycle-title">Un ciclo de dos rutinas</h2></div>
+            <div className="cycle-title flex items-center gap-[10px]"><CycleIcon size={21} /><h2 id="cycle-title">Un ciclo de dos rutinas</h2></div>
             <p className="cycle-intro">La fuerza alterna cada semana. <br />El cardio y el descanso se mantienen.</p>
             <div className={"cycle-row" + (week.routine === 1 ? " active" : "")}>
               <span className="cycle-number sage-number">1</span>
