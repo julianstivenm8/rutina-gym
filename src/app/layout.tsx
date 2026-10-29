@@ -24,8 +24,8 @@ export const viewport: Viewport = { width: "device-width", initialScale: 1, them
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="es" className={display.variable + " " + body.variable}>
-      <body className="bg-paper font-sans text-ink antialiased">{children}</body>
+    <html lang="es" className={display.variable + " " + body.variable + " scroll-smooth scroll-pt-[22px] mobile:scroll-pt-4 motion-reduce:scroll-auto"}>
+      <body className="bg-paper font-sans text-[14px] text-ink antialiased">{children}</body>
     </html>
   );
 }

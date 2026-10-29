@@ -45,4 +45,6 @@ Las pruebas cubren ambas rutinas, la transición a lunes a las 05:00 UTC, semana
 
 Tailwind CSS 4 se integra mediante `@tailwindcss/postcss` en `postcss.config.mjs`. Los colores y las fuentes del prototipo están disponibles como utilidades: `bg-paper`, `text-ink`, `text-sage`, `bg-sage-dark`, `font-sans` y `font-heading`.
 
-Los componentes usan utilidades de Tailwind para la estructura. Los estilos específicos y sus variantes responsive permanecen en la capa `components` de `src/app/globals.css`, por lo que las utilidades pueden sobrescribirlos. El reset original se conserva en la capa `base`, sin Preflight, para mantener el diseño existente. La detección de clases se limita a `src/`.
+Los estilos de los componentes, los estados de selección, las variantes de color y las adaptaciones responsive se definen con utilidades de Tailwind en `weekly-routine.tsx`, `week-calendar.tsx`, `session-detail.tsx` y `routine-cycle.tsx`. Las clases condicionales usan `cn` (`clsx` + `tailwind-merge`) y nombres completos que Tailwind puede detectar.
+
+`src/app/globals.css` contiene únicamente el tema, la animación de detalle, las variantes responsive y el reset global original sin Preflight. Las variantes `compact` (hasta 1150 px), `touch` (hasta 900 px), `tablet` (701–900 px), `mobile` (hasta 700 px), `small` (hasta 359 px) y `wide` (desde 1441 px) conservan los rangos del diseño. La detección de clases se limita a `src/`.

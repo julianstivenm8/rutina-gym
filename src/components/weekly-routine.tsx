@@ -1,43 +1,13 @@
 "use client";
 
 import { useEffect, useState, type KeyboardEvent } from "react";
-import { ACTIVITIES, getWeekModel, type Activity, type WeekModel } from "@/lib/routine";
-import { cn } from "@/lib/utils";
-import { ActivityIcon, ArrowIcon, CalendarIcon, ClockIcon, CycleIcon, DumbbellIcon, InfoIcon } from "./icons";
+import { ACTIVITIES, getWeekModel, type WeekModel } from "@/lib/routine";
+import { ActivityIcon, DumbbellIcon, InfoIcon } from "./icons";
+import { RoutineCycle } from "./routine-cycle";
+import { SessionDetail } from "./session-detail";
+import { WeekCalendar } from "./week-calendar";
 
 type ViewState = { week: WeekModel; selectedIndex: number } | null;
-
-function SessionContent({ activity }: { activity: Activity }) {
-  if (activity.id === "zone2") {
-    return <div className="session-facts">
-      <div className="session-fact flex items-center"><ClockIcon size={22} /><div><span>Duración</span><strong>45–60 <small>minutos</small></strong></div></div>
-      <div className="session-fact flex items-center"><ActivityIcon activity="hiit" size={25} /><div><span>Tipo de sesión</span><strong>Cardio continuo</strong></div></div>
-    </div>;
-  }
-  if (activity.id === "hiit") {
-    return <div className="interval-guide">
-      <div className="interval-key"><span className="intense-dot" />4 min intensos<span className="recovery-dot" />3–4 min de recuperación</div>
-      <div className="interval-track" aria-label="Cuatro intervalos de cuatro minutos intensos, con recuperación entre ellos">
-        {[1, 2, 3, 4].map((round) => <div className="interval-round" key={round}>
-          <div className="intense-block"><strong>4 min</strong><span>Intervalo {round}</span></div>
-          {round < 4 && <div className="recovery-block"><span>3–4</span><span>min</span></div>}
-        </div>)}
-      </div>
-    </div>;
-  }
-  if (activity.id === "rest") {
-    return <div className="rest-message"><ActivityIcon activity="rest" size={34} /><p>Descansar también es parte de la rutina.</p></div>;
-  }
-  return <div className="strength-note"><DumbbellIcon size={24} /><p>La rutina indica el grupo corporal. Los ejercicios, las series y las repeticiones están por definir.</p></div>;
-}
-
-function WeekSkeleton() {
-  return <div className="loading-week" role="status">
-    <CalendarIcon size={26} />
-    <span>Preparando tu semana…</span>
-    <span className="loading-line" />
-  </div>;
-}
 
 export function WeeklyRoutine() {
   const [view, setView] = useState<ViewState>(null);
@@ -76,7 +46,7 @@ export function WeeklyRoutine() {
     if (next === undefined) return;
     event.preventDefault();
     selectDay(next, false);
-    const buttons = event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>(".calendar-day");
+    const buttons = event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>("button[aria-pressed]");
     buttons?.[next]?.focus();
   }
 
@@ -86,88 +56,36 @@ export function WeeklyRoutine() {
   const selectedIsToday = selectedDay?.dateKey === week?.todayKey;
 
   return (
-    <div className="app-shell mx-auto">
-      <a className="skip-link" href="#week">Ir a la semana</a>
-      <header className="site-header flex items-center justify-between">
-        <a className="brand inline-flex items-center gap-[10px] no-underline" href="/" aria-label="Mi rutina, inicio">
-          <span className="brand-mark grid place-items-center bg-sage-dark text-paper"><DumbbellIcon size={26} /></span>
-          <span>mi rutina<span className="brand-period">.</span></span>
+    <div className="mx-auto max-w-[1440px] px-16 wide:px-[70px] compact:px-9 tablet:px-[26px] mobile:max-w-[560px] mobile:px-5 small:px-3.5">
+      <a className="fixed -top-20 left-4 z-20 rounded-lg bg-ink px-[18px] py-3 text-white focus:top-3" href="#week">Ir a la semana</a>
+      <header className="flex min-h-[103px] items-center justify-between border-b border-line mobile:min-h-20">
+        <a className="inline-flex items-center gap-2.5 text-[23px] font-[650] tracking-[-1.1px] no-underline mobile:text-[21px]" href="/" aria-label="Mi rutina, inicio">
+          <span className="grid size-[39px] place-items-center rounded-xl bg-sage-dark text-paper mobile:size-[34px] mobile:rounded-[10px] mobile:[&>svg]:size-[23px]"><DumbbellIcon size={26} /></span>
+          <span>mi rutina<span className="text-sage">.</span></span>
         </a>
-        <div className="header-note flex items-center text-sage"><ActivityIcon activity="rest" size={23} /><span>Constancia, a tu ritmo.</span></div>
+        <div className="flex items-center gap-[9px] text-[12px] text-sage mobile:gap-[5px] mobile:text-[10px] mobile:[&>svg]:size-5 small:[&>span]:hidden">
+          <ActivityIcon activity="rest" size={23} /><span>Constancia, a tu ritmo.</span>
+        </div>
       </header>
 
       <main>
-        <section className={cn("week-sheet mt-8", "routine-" + (week?.routine ?? 1))} id="week" aria-label="Calendario de la semana actual" aria-busy={!view}>
-          {week && view ? <>
-            <div className="week-heading flex justify-between">
-              <div className="routine-overview">
-                <span className="routine-badge">Rutina {week.routine}</span>
-                <p><strong>{week.routine === 1 ? "2" : "1"}</strong> de tren superior <span className="focus-divider">/</span> <strong>{week.routine === 1 ? "1" : "2"}</strong> de tren inferior</p>
-              </div>
-              <div className="week-number">Semana {week.isoWeek}</div>
-            </div>
+        <WeekCalendar week={week} selectedIndex={view?.selectedIndex} onSelectDay={selectDay} onDayKeyDown={handleDayKey} />
 
-            <div className="week-days grid" role="group" aria-label="Elige un día para consultar su entrenamiento">
-              {week.days.map((day, index) => {
-                const activity = ACTIVITIES[day.activityId];
-                const isToday = day.dateKey === week.todayKey;
-                const isSelected = index === view.selectedIndex;
-                return <button type="button"
-                  className={"calendar-day" + (isToday ? " is-today" : "") + (isSelected ? " is-selected" : "")}
-                  key={day.dateKey}
-                  aria-pressed={isSelected}
-                  aria-current={isToday ? "date" : undefined}
-                  aria-controls="session-detail"
-                  aria-label={day.fullDate + ": " + activity.title + (isToday ? ". Hoy" : "")}
-                  onClick={() => selectDay(index)}
-                  onKeyDown={(event) => handleDayKey(event, index)}
-                >
-                  <span className="day-top"><span className="day-name">{day.name}</span>{isToday && <span className="today-tag"><span />Hoy</span>}</span>
-                  <span className="day-number tabular-nums">{day.dayNumber.toString().padStart(2, "0")}</span>
-                  <span className={"activity-circle tone-" + activity.color}><ActivityIcon activity={day.activityId} size={54} /></span>
-                  <span className="day-activity">{activity.calendarTitle}</span>
-                  <span className="day-meta">{activity.id === "upper" || activity.id === "lower" ? activity.category : activity.calendarMeta}</span>
-                  <span className="day-bottom"><span>{isSelected ? "Viendo detalle" : "Ver detalle"}</span><ArrowIcon size={16} /></span>
-                </button>;
-              })}
-            </div>
-            <div className="calendar-caption"><span className="caption-mark" />Toca un día para explorar tu entrenamiento.</div>
-          </> : <WeekSkeleton />}
-        </section>
-
-        {week && view && selectedDay && selectedActivity && <div className="lower-grid">
-          <section id="session-detail" className={"session-detail tone-" + selectedActivity.color} aria-labelledby="session-title" aria-live="polite" aria-atomic="true">
-            <div className="detail-date"><span>{selectedDay.fullDate}</span>{selectedIsToday && <span className="detail-today">Hoy</span>}<a className="choose-day" href="#week">Cambiar día</a></div>
-            <div className="detail-main" key={selectedDay.dateKey}>
-              <span className="detail-icon"><ActivityIcon activity={selectedActivity.id} size={60} /></span>
-              <div className="detail-copy"><span className="category-label">{selectedActivity.category}</span><h2 id="session-title">{selectedActivity.title}</h2><p>{selectedIsToday ? selectedActivity.description : selectedActivity.description.replace("Hoy corresponde", "Corresponde").replace("Hoy no hay", "No hay")}</p></div>
-            </div>
-            <SessionContent activity={selectedActivity} />
-            {!selectedIsToday && <button className="back-today" type="button" onClick={() => selectDay(week.todayIndex)}>Volver a hoy<ArrowIcon size={17} /></button>}
-          </section>
-
-          <aside className="cycle-panel" aria-labelledby="cycle-title">
-            <div className="cycle-title flex items-center gap-[10px]"><CycleIcon size={21} /><h2 id="cycle-title">Un ciclo de dos rutinas</h2></div>
-            <p className="cycle-intro">La fuerza alterna cada semana. <br />El cardio y el descanso se mantienen.</p>
-            <div className={"cycle-row" + (week.routine === 1 ? " active" : "")}>
-              <span className="cycle-number sage-number">1</span>
-              <div><div className="cycle-row-title"><strong>Rutina 1</strong>{week.routine === 1 && <span>Esta semana</span>}</div><p>2 superior / 1 inferior</p><small>Semanas pares</small></div>
-              {week.routine === 1 && <span className="active-cycle-dot" />}
-            </div>
-            <div className={"cycle-row" + (week.routine === 2 ? " active" : "")}>
-              <span className="cycle-number lavender-number">2</span>
-              <div><div className="cycle-row-title"><strong>Rutina 2</strong>{week.routine === 2 && <span>Esta semana</span>}</div><p>2 inferior / 1 superior</p><small>Semanas impares</small></div>
-              {week.routine === 2 && <span className="active-cycle-dot" />}
-            </div>
-            <details className="cycle-explanation"><summary>¿Cómo cambia la rutina?<span aria-hidden="true">+</span></summary><p>Cambia los lunes según el número de semana ISO, con la fecha de Colombia. Una semana 53 seguida de una semana 1 mantiene la rutina 2.</p></details>
-          </aside>
+        {week && selectedDay && selectedActivity && <div className="mt-[25px] grid grid-cols-[minmax(0,1.8fr)_minmax(285px,1fr)] items-start gap-6 compact:grid-cols-[minmax(0,1.6fr)_minmax(280px,1fr)] compact:gap-[18px] touch:grid-cols-1 mobile:mt-[18px] mobile:gap-[17px]">
+          <SessionDetail day={selectedDay} activity={selectedActivity} isToday={selectedIsToday} onBackToToday={() => selectDay(week.todayIndex)} />
+          <RoutineCycle routine={week.routine} />
         </div>}
 
-        <div className="plan-note"><InfoIcon size={17} /><p>Una guía para consultar tu rutina. Los detalles de fuerza y las pulsaciones objetivo no están definidos.</p></div>
-        <noscript><p className="noscript-note">Activa JavaScript para calcular la semana actual y consultar los días de entrenamiento.</p></noscript>
+        <div className="mt-[23px] mb-[35px] flex items-start justify-center gap-[7px] text-muted [&>svg]:-mt-px [&>svg]:shrink-0 mobile:mx-0.5 mobile:mt-[22px] mobile:mb-7 mobile:justify-start">
+          <InfoIcon size={17} /><p className="text-[10px] leading-[1.6] touch:text-[11px] mobile:max-w-[55ch]">Una guía para consultar tu rutina. Los detalles de fuerza y las pulsaciones objetivo no están definidos.</p>
+        </div>
+        <noscript><p className="p-5 leading-[1.7]">Activa JavaScript para calcular la semana actual y consultar los días de entrenamiento.</p></noscript>
       </main>
 
-      <footer className="site-footer"><span>Un poco de fuerza. Un poco de cardio. Tu equilibrio.</span><span className="timezone"><span />Fecha de Colombia</span></footer>
+      <footer className="flex justify-between gap-[18px] border-t border-line pt-[23px] pb-7 text-[10px] text-muted touch:text-[11px] mobile:flex-col mobile:gap-[11px] mobile:pt-5 mobile:pb-[25px]">
+        <span>Un poco de fuerza. Un poco de cardio. Tu equilibrio.</span>
+        <span className="inline-flex items-center gap-1.5 whitespace-nowrap"><span className="size-1 rounded-full bg-sage" />Fecha de Colombia</span>
+      </footer>
     </div>
   );
 }
