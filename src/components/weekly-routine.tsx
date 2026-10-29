@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type KeyboardEvent } from "react";
 import { ACTIVITIES, getWeekModel, type Activity, type WeekModel } from "@/lib/routine";
+import { cn } from "@/lib/utils";
 import { ActivityIcon, ArrowIcon, CalendarIcon, ClockIcon, CycleIcon, DumbbellIcon, InfoIcon } from "./icons";
 
 type ViewState = { week: WeekModel; selectedIndex: number } | null;
@@ -96,14 +97,14 @@ export function WeeklyRoutine() {
       </header>
 
       <main>
-        <section className={"week-sheet routine-" + (week?.routine ?? 1)} id="week" aria-label="Calendario de la semana actual" aria-busy={!view}>
+        <section className={cn("week-sheet mt-8", "routine-" + (week?.routine ?? 1))} id="week" aria-label="Calendario de la semana actual" aria-busy={!view}>
           {week && view ? <>
             <div className="week-heading flex justify-between">
               <div className="routine-overview">
                 <span className="routine-badge">Rutina {week.routine}</span>
                 <p><strong>{week.routine === 1 ? "2" : "1"}</strong> de tren superior <span className="focus-divider">/</span> <strong>{week.routine === 1 ? "1" : "2"}</strong> de tren inferior</p>
               </div>
-              <div className="week-number">Semana {week.isoWeek}<span className="parity">{week.isoWeek % 2 === 0 ? "Par" : "Impar"}</span></div>
+              <div className="week-number">Semana {week.isoWeek}</div>
             </div>
 
             <div className="week-days grid" role="group" aria-label="Elige un día para consultar su entrenamiento">
