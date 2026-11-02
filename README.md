@@ -33,6 +33,12 @@ La compilación exporta la aplicación estática a `out/`. No requiere un servid
 
 La primera vista tiene un estado breve de carga para calcular la fecha real en el navegador, evitando congelar la semana en la fecha de compilación o causar diferencias de hidratación. La fecha se obtiene del reloj del dispositivo.
 
+## Tema claro y oscuro
+
+La aplicación usa el tema del sistema al abrirse y sigue sus cambios hasta que se elige un modo con el botón del header. El botón de luna/sol permite alternar entre claro y oscuro y comunica su estado con `aria-pressed`. La elección se mantiene mientras la página está abierta; al recargar vuelve a seguir al sistema.
+
+Toda la paleta se define con `light-dark()` en el tema de Tailwind, incluidos calendario, selección de días, ejercicios, HIIT y descanso. `color-scheme` aplica el tema del sistema desde la primera pintura y adapta también los controles y las barras de desplazamiento del navegador. No se necesita almacenamiento del navegador ni dependencias adicionales. Los temas requieren un navegador moderno compatible con `light-dark()`.
+
 ## Contenido
 
 Cada día de fuerza muestra los nueve ejercicios de la hoja [Rutinas Fuerza cardio](https://docs.google.com/spreadsheets/d/1lP5NMDguqA2cdb6-dmA4f_YqYxcTGslWgUUKwgSJt5s/edit?usp=drivesdk), conservando sus nombres y orden. Las listas dependen de la rutina y del día: el lunes y el viernes de la rutina 1 tienen ejercicios distintos. Los nombres se incluyen como datos estáticos en `src/lib/routine.ts`; la aplicación no consulta Google Drive.

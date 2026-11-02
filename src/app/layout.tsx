@@ -20,11 +20,18 @@ export const metadata: Metadata = {
   description: "Tu semana de fuerza, cardio y descanso. Consulta tu entrenamiento de cada día.",
   robots: { index: false, follow: false },
 };
-export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#f6f5ef" };
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f6f5ef" },
+    { media: "(prefers-color-scheme: dark)", color: "#141c18" },
+  ],
+};
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="es" className={display.variable + " " + body.variable + " scroll-smooth scroll-pt-[22px] mobile:scroll-pt-4 motion-reduce:scroll-auto"}>
+    <html lang="es" className={display.variable + " " + body.variable + " bg-paper scheme-light-dark data-[theme=light]:scheme-light data-[theme=dark]:scheme-dark scroll-smooth scroll-pt-[22px] mobile:scroll-pt-4 motion-reduce:scroll-auto"}>
       <body className="bg-paper font-sans text-[14px] text-ink antialiased">{children}</body>
     </html>
   );

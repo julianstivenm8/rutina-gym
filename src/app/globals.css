@@ -3,18 +3,72 @@
 @import "tailwindcss/utilities.css" layer(utilities) source("../");
 
 @theme {
-  --color-paper: #f6f5ef;
-  --color-surface: #fdfcf8;
-  --color-ink: #283d33;
-  --color-muted: #6e766b;
-  --color-line: #dedfd5;
-  --color-sage: #58735f;
-  --color-sage-dark: #365541;
-  --color-sage-light: #e9ede4;
-  --color-lavender: #817294;
-  --color-lavender-light: #efebf3;
-  --color-coral: #b45b46;
-  --color-coral-light: #f6e9e1;
+  --color-paper: light-dark(#f6f5ef, #141c18);
+  --color-surface: light-dark(#fdfcf8, #1c2721);
+  --color-ink: light-dark(#283d33, #e6ede2);
+  --color-muted: light-dark(#6e766b, #abb8a6);
+  --color-line: light-dark(#dedfd5, #405046);
+  --color-sage: light-dark(#58735f, #a8c69c);
+  --color-sage-dark: light-dark(#365541, #bdd5b5);
+  --color-sage-light: light-dark(#e9ede4, #2a3a2d);
+  --color-lavender: light-dark(#817294, #bba7d1);
+  --color-lavender-light: light-dark(#efebf3, #332c3f);
+  --color-coral: light-dark(#b45b46, #e6a38b);
+  --color-coral-light: light-dark(#f6e9e1, #452e26);
+  --color-cycle-border: light-dark(#e2e1d8, #3d4e41);
+  --color-cycle-surface: light-dark(#eeede7, #202c25);
+  --color-cycle-line: light-dark(#d9dace, #435340);
+  --color-cycle-sage-border: light-dark(#c4cebd, #69845d);
+  --color-cycle-sage-surface: light-dark(#e3e9dc, #304a31);
+  --color-cycle-lavender-border: light-dark(#d5cbde, #75618a);
+  --color-cycle-lavender-surface: light-dark(#e8e2ed, #3b304a);
+  --color-cycle-lavender-ink: light-dark(#78608c, #d2bce8);
+  --color-cycle-ink: light-dark(#5f6b5b, #c0ceb7);
+  --color-cycle-summary: light-dark(#5c6856, #c0ccb6);
+  --color-sage-detail-border: light-dark(#d0d9c7, #56704c);
+  --color-sage-detail-surface: light-dark(#eef0e7, #2b3b2c);
+  --color-coral-detail-border: light-dark(#dfb7a7, #855b49);
+  --color-lavender-detail-border: light-dark(#d5cbe0, #685478);
+  --color-facts-border: light-dark(#dce1d4, #465c4a);
+  --color-exercise-border: light-dark(#e0e3d6, #415543);
+  --color-exercise-surface: light-dark(#f4f5ee, #24332a);
+  --color-facts-surface: light-dark(#f5f6ef, #24332a);
+  --color-intense-dot: light-dark(#bb7962, #e5a18a);
+  --color-recovery-dot-border: light-dark(#bccbb0, #78916b);
+  --color-recovery-dot: light-dark(#dce4d5, #4f6947);
+  --color-intense-border: light-dark(#e0b4a1, #99664e);
+  --color-intense-surface: light-dark(#f0dacf, #4c3329);
+  --color-intense-ink: light-dark(#8c4833, #f5c1a8);
+  --color-recovery-surface: light-dark(#edf0e6, #2e4030);
+  --color-recovery-ink: light-dark(#647359, #c0d0b4);
+  --color-rest-border: light-dark(#dfd6e6, #51425e);
+  --color-rest-surface: light-dark(#f4f0f7, #2d2837);
+  --color-rest-ink: light-dark(#64715c, #b0c1a8);
+  --color-today-label: light-dark(#a04d37, #e9ac92);
+  --color-today-border: light-dark(#ce9b88, #bb816b);
+  --color-selected-border: light-dark(#aebba7, #879f7e);
+  --color-day-border: light-dark(#e3e4da, #384b3f);
+  --color-today-ink: light-dark(#9c4936, #f0b69e);
+  --color-today-surface: light-dark(#fbf2eb, #352820);
+  --color-today-hover: light-dark(#f8eade, #463127);
+  --color-day-hover: light-dark(#eff1e9, #2c3d31);
+  --color-today-icon-border: light-dark(#cb9d86, #bf896e);
+  --color-today-icon-ink: light-dark(#ae5e46, #ebae91);
+  --color-coral-icon-border: light-dark(#d4a996, #a7755e);
+  --color-lavender-icon-border: light-dark(#bcb0c9, #89739f);
+  --color-sage-icon-border: light-dark(#aab9a5, #7f9d75);
+  --color-today-line: light-dark(#dfc4b3, #845a43);
+  --color-selected-line: light-dark(#c2cdbb, #6d8663);
+  --color-day-detail: light-dark(#6c7664, #b2c1a8);
+  --color-week-border: light-dark(#d4d9ce, #3f5345);
+  --color-week-lavender-border: light-dark(#d5ccdf, #5d4d70);
+  --color-lavender-strong: light-dark(#756384, #c4aed8);
+  --color-lavender-ink: light-dark(#6e5b7f, #d0bce2);
+  --color-focus-divider: light-dark(#9ca995, #a0b295);
+  --color-caption-mark: light-dark(#8e9d83, #8ca882);
+  --color-loading-line: light-dark(#b9c6b2, #5b7754);
+  --color-selection: light-dark(#dce6d6, #435e3d);
+  --color-selection-ink: light-dark(#1b3825, #f1f8ec);
   --animate-detail-in: detail-in 180ms ease-out;
 
   @keyframes detail-in {
@@ -45,6 +99,6 @@
   button, summary { touch-action: manipulation; }
   a { color: inherit; }
   h1, h2, p { margin: 0; }
-  ::selection { background: #dce6d6; color: #1b3825; }
+  ::selection { background: var(--color-selection); color: var(--color-selection-ink); }
   :focus-visible { outline: 3px solid var(--color-sage-dark); outline-offset: 5px; }
 }
