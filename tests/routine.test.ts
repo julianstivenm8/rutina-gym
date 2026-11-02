@@ -34,20 +34,35 @@ test("routine 2 assigns lower-body lists to Monday and Friday and its own upper-
   const { days } = getWeekModel(new Date("2026-11-02T15:00:00Z"));
   assert.equal(days[0].exercises[0], "Abductores");
   assert.equal(days[0].exercises.at(-1), "Abdominales");
-  assert.deepEqual(days[0].exercises, days[4].exercises);
+  assert.equal(days[0].exercises[4], "Step ups");
+  assert.equal(days[0].exercises[5], "Peso muerto unilateral");
+  assert.equal(days[4].exercises[4], "Curl nordico");
+  assert.equal(days[4].exercises[5], "Hip trust");
+  assert.notDeepEqual(days[0].exercises, days[4].exercises);
   assert.equal(days[2].exercises[1], "Pecho Inclinado");
   assert.equal(days[2].exercises[7], "Bicep en mancuerna en banco inclinado");
   assert.notDeepEqual(days[0].exercises, days[2].exercises);
 });
 
-test("both routines provide nine names only on strength days", () => {
-  for (const instant of ["2026-10-29T15:00:00Z", "2026-11-02T15:00:00Z"]) {
+test("strength days retain the spreadsheet's session lengths and other days have no exercise list", () => {
+  for (const [instant, expectedLengths] of [
+    ["2026-10-29T15:00:00Z", [9, 0, 9, 0, 9, 0, 0]],
+    ["2026-11-02T15:00:00Z", [7, 0, 9, 0, 7, 0, 0]],
+  ] as const) {
     const { days } = getWeekModel(new Date(instant));
-    for (const day of days) {
-      const isStrength = day.activityId === "upper" || day.activityId === "lower";
-      assert.equal(day.exercises.length, isStrength ? 9 : 0, day.fullDate);
-    }
+    assert.deepEqual(days.map(day => day.exercises.length), expectedLengths);
   }
+});
+
+test("the three two-set notes belong only to routine 1's Wednesday session", () => {
+  const evenWeek = getWeekModel(new Date("2026-10-29T15:00:00Z"));
+  const oddWeek = getWeekModel(new Date("2026-11-02T15:00:00Z"));
+  assert.deepEqual(evenWeek.days[2].exercises.filter(name => name.includes("( 2 Series )")), [
+    "Peso muerto unilateral ( 2 Series )",
+    "Step ups ( 2 Series )",
+    "Curl nordico ( 2 Series )",
+  ]);
+  assert.ok(oddWeek.days.every(day => day.exercises.every(name => !name.includes("Series"))));
 });
 
 test("the calendar remains on Colombia's Sunday after UTC has crossed into Monday", () => {

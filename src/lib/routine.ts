@@ -67,14 +67,14 @@ const SCHEDULES: Record<1 | 2, readonly ActivityId[]> = {
 };
 
 // Names and order from the supplied "Rutinas Fuerza cardio" spreadsheet.
-const LOWER_EXERCISES: readonly string[] = [
+const ROUTINE_ONE_LOWER_EXERCISES: readonly string[] = [
   "Abductores",
   "Gemelos",
   "Sentadilla Libre",
-  "Peso muerto unilateral",
+  "Peso muerto unilateral ( 2 Series )",
   "Peso Muerto Rumano",
-  "Step ups",
-  "Curl nordico",
+  "Step ups ( 2 Series )",
+  "Curl nordico ( 2 Series )",
   "Hip trust",
   "Abdominales",
 ];
@@ -92,7 +92,7 @@ const STRENGTH_EXERCISES: Record<1 | 2, Partial<Record<number, readonly string[]
       "Bicep en mancuerna en banco inclinado",
       "Hombro press militar",
     ],
-    2: LOWER_EXERCISES,
+    2: ROUTINE_ONE_LOWER_EXERCISES,
     4: [
       "Pecho en banco plano",
       "Pecho con polea",
@@ -106,7 +106,15 @@ const STRENGTH_EXERCISES: Record<1 | 2, Partial<Record<number, readonly string[]
     ],
   },
   2: {
-    0: LOWER_EXERCISES,
+    0: [
+      "Abductores",
+      "Gemelos",
+      "Sentadilla Libre",
+      "Peso Muerto Rumano",
+      "Step ups",
+      "Peso muerto unilateral",
+      "Abdominales",
+    ],
     2: [
       "Pecho en banco plano",
       "Pecho Inclinado",
@@ -118,7 +126,15 @@ const STRENGTH_EXERCISES: Record<1 | 2, Partial<Record<number, readonly string[]
       "Bicep en mancuerna en banco inclinado",
       "Hombro press militar",
     ],
-    4: LOWER_EXERCISES,
+    4: [
+      "Abductores",
+      "Gemelos",
+      "Sentadilla Libre",
+      "Peso Muerto Rumano",
+      "Curl nordico",
+      "Hip trust",
+      "Abdominales",
+    ],
   },
 };
 export const DAY_NAMES = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
