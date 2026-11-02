@@ -35,7 +35,9 @@ La primera vista tiene un estado breve de carga para calcular la fecha real en e
 
 ## Contenido
 
-La fuerza solo define tren superior/inferior. No se agregaron ejercicios concretos, series, repeticiones, duración de fuerza ni pulsaciones objetivo. Cardio zona 2: 45–60 minutos. HIIT: cuatro intervalos de cuatro minutos intensos y tres recuperaciones de 3–4 minutos entre ellos. Domingo: descanso.
+Cada día de fuerza muestra los nueve ejercicios de la hoja [Rutinas Fuerza cardio](https://docs.google.com/spreadsheets/d/1lP5NMDguqA2cdb6-dmA4f_YqYxcTGslWgUUKwgSJt5s/edit?usp=drivesdk), conservando sus nombres y orden. Las listas dependen de la rutina y del día: el lunes y el viernes de la rutina 1 tienen ejercicios distintos. Los nombres se incluyen como datos estáticos en `src/lib/routine.ts`; la aplicación no consulta Google Drive.
+
+Solo se muestran nombres de ejercicios, sin series, repeticiones, pesos, duración de fuerza ni pulsaciones objetivo. Cardio zona 2: 45–60 minutos. HIIT: cuatro intervalos de cuatro minutos intensos y tres recuperaciones de 3–4 minutos entre ellos. Domingo: descanso.
 
 ## Validación
 

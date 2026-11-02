@@ -77,7 +77,7 @@ export function WeeklyRoutine() {
         </div>}
 
         <div className="mt-[23px] mb-[35px] flex items-start justify-center gap-[7px] text-muted [&>svg]:-mt-px [&>svg]:shrink-0 mobile:mx-0.5 mobile:mt-[22px] mobile:mb-7 mobile:justify-start">
-          <InfoIcon size={17} /><p className="text-[10px] leading-[1.6] touch:text-[11px] mobile:max-w-[55ch]">Una guía para consultar tu rutina. Los detalles de fuerza y las pulsaciones objetivo no están definidos.</p>
+          <InfoIcon size={17} /><p className="text-[10px] leading-[1.6] touch:text-[11px] mobile:max-w-[55ch]">Tu rutina de fuerza y cardio, organizada por día.</p>
         </div>
         <noscript><p className="p-5 leading-[1.7]">Activa JavaScript para calcular la semana actual y consultar los días de entrenamiento.</p></noscript>
       </main>

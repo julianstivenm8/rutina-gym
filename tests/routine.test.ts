@@ -20,6 +20,36 @@ test("ISO odd week 45 selects routine 2 with lower-body Monday and Friday", () =
   assert.deepEqual(week.days.map(day => day.activityId), ["lower", "zone2", "upper", "zone2", "lower", "hiit", "rest"]);
 });
 
+test("routine 1 keeps the spreadsheet's distinct Monday and Friday upper-body sessions", () => {
+  const { days } = getWeekModel(new Date("2026-10-29T15:00:00Z"));
+  assert.equal(days[0].exercises[1], "Pecho  en banco Inclinado");
+  assert.equal(days[0].exercises.at(-1), "Hombro press militar");
+  assert.equal(days[4].exercises[1], "Pecho con polea");
+  assert.equal(days[4].exercises[3], "Espalda con polea");
+  assert.equal(days[4].exercises.at(-1), "Hombro laterales");
+  assert.notDeepEqual(days[0].exercises, days[4].exercises);
+});
+
+test("routine 2 assigns lower-body lists to Monday and Friday and its own upper-body list to Wednesday", () => {
+  const { days } = getWeekModel(new Date("2026-11-02T15:00:00Z"));
+  assert.equal(days[0].exercises[0], "Abductores");
+  assert.equal(days[0].exercises.at(-1), "Abdominales");
+  assert.deepEqual(days[0].exercises, days[4].exercises);
+  assert.equal(days[2].exercises[1], "Pecho Inclinado");
+  assert.equal(days[2].exercises[7], "Bicep en mancuerna en banco inclinado");
+  assert.notDeepEqual(days[0].exercises, days[2].exercises);
+});
+
+test("both routines provide nine names only on strength days", () => {
+  for (const instant of ["2026-10-29T15:00:00Z", "2026-11-02T15:00:00Z"]) {
+    const { days } = getWeekModel(new Date(instant));
+    for (const day of days) {
+      const isStrength = day.activityId === "upper" || day.activityId === "lower";
+      assert.equal(day.exercises.length, isStrength ? 9 : 0, day.fullDate);
+    }
+  }
+});
+
 test("the calendar remains on Colombia's Sunday after UTC has crossed into Monday", () => {
   const week = getWeekModel(new Date("2026-11-02T04:59:59.999Z"));
   assert.equal(week.todayKey, "2026-11-01");

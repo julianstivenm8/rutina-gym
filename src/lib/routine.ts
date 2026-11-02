@@ -65,6 +65,62 @@ const SCHEDULES: Record<1 | 2, readonly ActivityId[]> = {
   1: ["upper", "zone2", "lower", "zone2", "upper", "hiit", "rest"],
   2: ["lower", "zone2", "upper", "zone2", "lower", "hiit", "rest"],
 };
+
+// Names and order from the supplied "Rutinas Fuerza cardio" spreadsheet.
+const LOWER_EXERCISES: readonly string[] = [
+  "Abductores",
+  "Gemelos",
+  "Sentadilla Libre",
+  "Peso muerto unilateral",
+  "Peso Muerto Rumano",
+  "Step ups",
+  "Curl nordico",
+  "Hip trust",
+  "Abdominales",
+];
+
+const STRENGTH_EXERCISES: Record<1 | 2, Partial<Record<number, readonly string[]>>> = {
+  1: {
+    0: [
+      "Pecho en banco plano",
+      "Pecho  en banco Inclinado",
+      "Dominadas espalda",
+      "Barra para espalda",
+      "Dominadas Biceps",
+      "Mancuernas parado",
+      "Fondos Biceps",
+      "Bicep en mancuerna en banco inclinado",
+      "Hombro press militar",
+    ],
+    2: LOWER_EXERCISES,
+    4: [
+      "Pecho en banco plano",
+      "Pecho con polea",
+      "Dominadas espalda",
+      "Espalda con polea",
+      "Dominadas Biceps",
+      "Mancuernas banco inclinado",
+      "Fondos Biceps",
+      "Bicep en mancuerna en banco plano",
+      "Hombro laterales",
+    ],
+  },
+  2: {
+    0: LOWER_EXERCISES,
+    2: [
+      "Pecho en banco plano",
+      "Pecho Inclinado",
+      "Dominadas espalda",
+      "Barra para espalda",
+      "Dominadas Biceps",
+      "Mancuernas parado",
+      "Fondos Biceps",
+      "Bicep en mancuerna en banco inclinado",
+      "Hombro press militar",
+    ],
+    4: LOWER_EXERCISES,
+  },
+};
 export const DAY_NAMES = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
 
 export type WeekDay = {
@@ -73,6 +129,7 @@ export type WeekDay = {
   name: string;
   fullDate: string;
   activityId: ActivityId;
+  exercises: readonly string[];
 };
 export type WeekModel = {
   todayKey: string;
@@ -134,6 +191,7 @@ export function getWeekModel(instant: Date = new Date()): WeekModel {
       name,
       fullDate: fullDate.format(date),
       activityId: SCHEDULES[routine][index],
+      exercises: STRENGTH_EXERCISES[routine][index] ?? [],
     };
   });
   const sunday = new Date(monday.getTime() + 6 * DAY_MS);

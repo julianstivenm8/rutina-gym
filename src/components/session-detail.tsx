@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import type { Activity, WeekDay } from "@/lib/routine";
 import { cn } from "@/lib/utils";
-import { ActivityIcon, ArrowIcon, ClockIcon, DumbbellIcon } from "./icons";
+import { ActivityIcon, ArrowIcon, ClockIcon } from "./icons";
 
 const sessionTones = {
   sage: { icon: "border-[#d0d9c7] bg-[#eef0e7] text-sage", label: "text-sage" },
@@ -23,7 +23,18 @@ function SessionFact({ icon, label, children }: { icon: ReactNode; label: string
   );
 }
 
-function SessionContent({ activity }: { activity: Activity }) {
+function SessionContent({ activity, exercises }: { activity: Activity; exercises: readonly string[] }) {
+  if (activity.id === "upper" || activity.id === "lower") {
+    return (
+      <ul className="m-0 list-none divide-y divide-[#e0e3d6] rounded-[9px] border border-[#e0e3d6] bg-[#f4f5ee] p-0" aria-label="Ejercicios del día">
+        {exercises.map((exercise) => <li className="flex items-center gap-3 px-[17px] py-3 text-[14px] leading-[1.6] text-ink mobile:gap-2.5 mobile:px-3.5 mobile:text-[13px]" key={exercise}>
+          <span className="size-1 shrink-0 rounded-full bg-sage" aria-hidden="true" />
+          <span className="min-w-0 break-words">{exercise}</span>
+        </li>)}
+      </ul>
+    );
+  }
+
   if (activity.id === "zone2") {
     return (
       <div className="grid grid-cols-2 rounded-[9px] border border-[#dce1d4] bg-[#f5f6ef] mobile:grid-cols-[1fr_1.1fr]">
@@ -59,15 +70,11 @@ function SessionContent({ activity }: { activity: Activity }) {
     );
   }
 
-  const isRest = activity.id === "rest";
   return (
-    <div className={cn(
-      "flex items-center gap-3.5 rounded-[9px] border p-[17px] [&>svg]:shrink-0 mobile:gap-[11px] mobile:p-3.5",
-      isRest ? "border-[#dfd6e6] bg-[#f4f0f7] [&>svg]:text-lavender" : "border-[#e0e3d6] bg-[#f4f5ee] [&>svg]:text-sage",
-    )}>
-      {isRest ? <ActivityIcon activity="rest" size={34} /> : <DumbbellIcon size={24} />}
+    <div className="flex items-center gap-3.5 rounded-[9px] border border-[#dfd6e6] bg-[#f4f0f7] p-[17px] [&>svg]:shrink-0 [&>svg]:text-lavender mobile:gap-[11px] mobile:p-3.5">
+      <ActivityIcon activity="rest" size={34} />
       <p className="max-w-[55ch] text-[12px] leading-[1.7] text-[#64715c]">
-        {isRest ? "Descansar también es parte de la rutina." : "La rutina indica el grupo corporal. Los ejercicios, las series y las repeticiones están por definir."}
+        Descansar también es parte de la rutina.
       </p>
     </div>
   );
@@ -103,7 +110,7 @@ export function SessionDetail({ day, activity, isToday, onBackToToday }: {
           </p>
         </div>
       </div>
-      <SessionContent activity={activity} />
+      <SessionContent activity={activity} exercises={day.exercises} />
       {!isToday && <button className="mt-3 flex min-h-11 items-center gap-2 border-0 bg-transparent px-0 py-1.5 text-[11px] text-sage-dark" type="button" onClick={onBackToToday}>
         Volver a hoy<ArrowIcon size={17} />
       </button>}
