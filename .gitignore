@@ -7,3 +7,6 @@ out/
 .openai/*.local.*
 artifacts/
 *.zip
+.env*
+!.env.example
+.vercel/

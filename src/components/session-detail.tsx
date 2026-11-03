@@ -23,18 +23,21 @@ function SessionFact({ icon, label, children }: { icon: ReactNode; label: string
   );
 }
 
-function SessionContent({ activity, exercises }: { activity: Activity; exercises: readonly string[] }) {
-  if (activity.id === "upper" || activity.id === "lower") {
+function SessionContent({ activity, exercises, notes, custom }: { activity: Activity; exercises: readonly string[]; notes?: readonly string[]; custom?: boolean }) {
+  if (activity.id === "upper" || activity.id === "lower" || activity.id === "strength") {
     return (
       <ul className="m-0 list-none divide-y divide-exercise-border rounded-[9px] border border-exercise-border bg-exercise-surface p-0" aria-label="Ejercicios del día">
-        {exercises.map((exercise) => <li className="flex items-center gap-3 px-[17px] py-3 text-[14px] leading-[1.6] text-ink mobile:gap-2.5 mobile:px-3.5 mobile:text-[13px]" key={exercise}>
+        {exercises.map((exercise, index) => <li className="flex items-center gap-3 px-[17px] py-3 text-[14px] leading-[1.6] text-ink mobile:gap-2.5 mobile:px-3.5 mobile:text-[13px]" key={index}>
           <span className="size-1 shrink-0 rounded-full bg-sage" aria-hidden="true" />
-          <span className="min-w-0 break-words">{exercise}</span>
+          <span className="min-w-0 break-words">{exercise}{notes?.[index] && <span className="mt-1 block text-xs text-muted">{notes[index]}</span>}</span>
         </li>)}
       </ul>
     );
   }
 
+  if (custom && activity.id !== "rest") {
+    return <div className="flex items-center gap-3 rounded-[9px] border border-facts-border bg-facts-surface p-5 text-sm"><ClockIcon size={23} /><p>{activity.calendarMeta || "Sin duración indicada"}</p></div>;
+  }
   if (activity.id === "zone2") {
     return (
       <div className="grid grid-cols-2 rounded-[9px] border border-facts-border bg-facts-surface mobile:grid-cols-[1fr_1.1fr]">
@@ -110,7 +113,7 @@ export function SessionDetail({ day, activity, isToday, onBackToToday }: {
           </p>
         </div>
       </div>
-      <SessionContent activity={activity} exercises={day.exercises} />
+      <SessionContent activity={activity} exercises={day.exercises} notes={day.exerciseNotes} custom={day.custom} />
       {!isToday && <button className="mt-3 flex min-h-11 items-center gap-2 border-0 bg-transparent px-0 py-1.5 text-[11px] text-sage-dark" type="button" onClick={onBackToToday}>
         Volver a hoy<ArrowIcon size={17} />
       </button>}

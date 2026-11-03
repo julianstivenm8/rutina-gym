@@ -2,22 +2,24 @@
 
 import { useEffect, useState, type KeyboardEvent } from "react";
 import { ACTIVITIES, getWeekModel, type WeekModel } from "@/lib/routine";
-import { ActivityIcon, DumbbellIcon, InfoIcon } from "./icons";
+import type { AuthenticatedUser } from "@/lib/auth-types";
+import type { RoutineDefinition } from "@/lib/routine-definition";
+import { InfoIcon } from "./icons";
+import { AppHeader } from "./app-header";
 import { RoutineCycle } from "./routine-cycle";
 import { SessionDetail } from "./session-detail";
 import { WeekCalendar } from "./week-calendar";
-import { ThemeToggle } from "./theme-toggle";
 
 type ViewState = { week: WeekModel; selectedIndex: number } | null;
 
-export function WeeklyRoutine() {
+export function WeeklyRoutine({ user, definition }: { user: AuthenticatedUser; definition: RoutineDefinition }) {
   const [view, setView] = useState<ViewState>(null);
 
   useEffect(() => {
     const refresh = () => {
-      const week = getWeekModel();
+      const week = getWeekModel(new Date(), definition);
       setView((previous) => previous?.week.todayKey === week.todayKey
-        ? previous : { week, selectedIndex: week.todayIndex });
+        ? { week, selectedIndex: previous.selectedIndex } : { week, selectedIndex: week.todayIndex });
     };
     refresh();
     const interval = window.setInterval(refresh, 30_000);
@@ -27,7 +29,7 @@ export function WeeklyRoutine() {
       window.clearInterval(interval);
       document.removeEventListener("visibilitychange", onVisibility);
     };
-  }, []);
+  }, [definition]);
 
   function selectDay(index: number, reveal = true) {
     setView((previous) => previous ? { ...previous, selectedIndex: index } : previous);
@@ -53,31 +55,20 @@ export function WeeklyRoutine() {
 
   const week = view?.week;
   const selectedDay = view ? view.week.days[view.selectedIndex] : null;
-  const selectedActivity = selectedDay ? ACTIVITIES[selectedDay.activityId] : null;
+  const selectedActivity = selectedDay ? selectedDay.activity ?? ACTIVITIES[selectedDay.activityId] : null;
   const selectedIsToday = selectedDay?.dateKey === week?.todayKey;
 
   return (
     <div className="mx-auto max-w-[1440px] px-16 wide:px-[70px] compact:px-9 tablet:px-[26px] mobile:max-w-[560px] mobile:px-5 small:px-3.5">
       <a className="fixed -top-20 left-4 z-20 rounded-lg bg-ink px-[18px] py-3 text-surface focus:top-3" href="#week">Ir a la semana</a>
-      <header className="flex min-h-[103px] items-center justify-between gap-4 border-b border-line mobile:min-h-20 mobile:gap-3">
-        <a className="inline-flex items-center gap-2.5 text-[23px] font-[650] tracking-[-1.1px] no-underline mobile:text-[21px]" href="/" aria-label="Mi rutina, inicio">
-          <span className="grid size-[39px] place-items-center rounded-xl bg-sage-dark text-paper mobile:size-[34px] mobile:rounded-[10px] mobile:[&>svg]:size-[23px]"><DumbbellIcon size={26} /></span>
-          <span>mi rutina<span className="text-sage">.</span></span>
-        </a>
-        <div className="flex items-center gap-5 mobile:gap-3">
-          <div className="flex items-center gap-[9px] text-[12px] text-sage mobile:gap-[5px] mobile:text-[10px] mobile:[&>svg]:size-5 max-[420px]:[&>span]:hidden">
-            <ActivityIcon activity="rest" size={23} /><span>Constancia, a tu ritmo.</span>
-          </div>
-          <ThemeToggle />
-        </div>
-      </header>
+      <AppHeader user={user} />
 
       <main>
         <WeekCalendar week={week} selectedIndex={view?.selectedIndex} onSelectDay={selectDay} onDayKeyDown={handleDayKey} />
 
         {week && selectedDay && selectedActivity && <div className="mt-[25px] grid grid-cols-[minmax(0,1.8fr)_minmax(285px,1fr)] items-start gap-6 compact:grid-cols-[minmax(0,1.6fr)_minmax(280px,1fr)] compact:gap-[18px] touch:grid-cols-1 mobile:mt-[18px] mobile:gap-[17px]">
           <SessionDetail day={selectedDay} activity={selectedActivity} isToday={selectedIsToday} onBackToToday={() => selectDay(week.todayIndex)} />
-          <RoutineCycle routine={week.routine} />
+          <RoutineCycle routine={week.routine} definition={definition} />
         </div>}
 
         <div className="mt-[23px] mb-[35px] flex items-start justify-center gap-[7px] text-muted [&>svg]:-mt-px [&>svg]:shrink-0 mobile:mx-0.5 mobile:mt-[22px] mobile:mb-7 mobile:justify-start">

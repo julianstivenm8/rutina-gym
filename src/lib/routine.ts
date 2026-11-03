@@ -1,7 +1,9 @@
+import type { RoutineDefinition } from "./routine-definition.ts";
+
 export const TIME_ZONE = "America/Bogota";
 const DAY_MS = 86_400_000;
 
-export type ActivityId = "upper" | "lower" | "zone2" | "hiit" | "rest";
+export type ActivityId = "upper" | "lower" | "strength" | "zone2" | "hiit" | "cardio" | "rest";
 
 export type Activity = {
   id: ActivityId;
@@ -14,6 +16,8 @@ export type Activity = {
 };
 
 export const ACTIVITIES: Record<ActivityId, Activity> = {
+  strength: { id: "strength", title: "Fuerza", calendarTitle: "Fuerza", category: "Fuerza", calendarMeta: "", description: "", color: "sage" },
+  cardio: { id: "cardio", title: "Cardio", calendarTitle: "Cardio", category: "Cardio", calendarMeta: "", description: "", color: "sage" },
   upper: {
     id: "upper",
     title: "Fuerza de tren superior",
@@ -146,13 +150,18 @@ export type WeekDay = {
   fullDate: string;
   activityId: ActivityId;
   exercises: readonly string[];
+  activity?: Activity;
+  exerciseNotes?: readonly string[];
+  custom?: boolean;
 };
 export type WeekModel = {
   todayKey: string;
   todayIndex: number;
   isoWeek: number;
   isoYear: number;
-  routine: 1 | 2;
+  routine: number;
+  routineName?: string;
+  planName?: string;
   rangeLabel: string;
   days: WeekDay[];
 };
@@ -187,7 +196,7 @@ export function getRoutineForWeek(isoWeek: number): 1 | 2 {
   return isoWeek % 2 === 0 ? 1 : 2;
 }
 
-export function getWeekModel(instant: Date = new Date()): WeekModel {
+export function getWeekModel(instant: Date = new Date(), definition?: RoutineDefinition): WeekModel {
   const today = getBogotaCalendarDate(instant);
   const todayIndex = (today.getUTCDay() + 6) % 7;
   const monday = new Date(today.getTime() - todayIndex * DAY_MS);
@@ -218,8 +227,43 @@ export function getWeekModel(instant: Date = new Date()): WeekModel {
       + (monday.getUTCFullYear() !== sunday.getUTCFullYear() ? " " + monday.getUTCFullYear() : "");
   const rangeLabel = startLabel + " — " + sunday.getUTCDate() + " " + shortMonth(sunday)
     + ", " + sunday.getUTCFullYear();
-  return {
+  const model: WeekModel = {
     todayKey: calendarKey(today), todayIndex, isoWeek: iso.week, isoYear: iso.year,
     routine, rangeLabel, days,
+  };
+  if (!definition) return model;
+  const count = definition.weeks.length;
+  const elapsedWeeks = Math.floor((monday.getTime() - new Date(definition.startDate + "T00:00:00Z").getTime()) / (7 * DAY_MS));
+  const cycleIndex = definition.scheduling === "iso-parity" ? getRoutineForWeek(iso.week) - 1 : ((elapsedWeeks % count) + count) % count;
+  const current = definition.weeks[cycleIndex];
+  return {
+    ...model, routine: cycleIndex + 1, routineName: current.name, planName: definition.name,
+    days: model.days.map((day, index) => {
+      const saved = current.days[index];
+      const base = ACTIVITIES[saved.activityId];
+      return {
+        ...day, activityId: saved.activityId, custom: true,
+        activity: { ...base, title: saved.title, calendarTitle: saved.title, description: saved.description, calendarMeta: saved.duration },
+        exercises: saved.exercises.map(exercise => exercise.name),
+        exerciseNotes: saved.exercises.map(exercise => exercise.note),
+      };
+    }),
+  };
+}
+
+/** A private copy of the supplied routine for every account. Keep the original text and order. */
+export function getDefaultRoutineDefinition(): RoutineDefinition {
+  return {
+    name: "Fuerza y cardio", scheduling: "iso-parity", startDate: "2026-10-26",
+    weeks: ([1, 2] as const).map(number => ({
+      name: "Rutina " + number,
+      days: SCHEDULES[number].map((activityId, index) => ({
+        activityId,
+        title: ACTIVITIES[activityId].calendarTitle.replace(/\u00a0/g, " "),
+        description: ACTIVITIES[activityId].description,
+        duration: activityId === "zone2" ? "45–60 min" : activityId === "hiit" ? "4 × 4 min · recuperación de 3–4 min" : "",
+        exercises: (STRENGTH_EXERCISES[number][index] ?? []).map(name => ({ name, note: "" })),
+      })),
+    })),
   };
 }
