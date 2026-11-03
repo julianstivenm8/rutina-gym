@@ -1,6 +1,6 @@
 # Mi rutina · Fuerza + cardio
 
-Prototipo en Next.js App Router, React y TypeScript, inspirado en la referencia compartida: marfil, verde salvia, lavanda, coral, tipografía condensada e iconos de línea.
+Aplicación en Next.js App Router, React y TypeScript, con acceso mediante Google, inspirada en la referencia compartida: marfil, verde salvia, lavanda, coral, tipografía condensada e iconos de línea.
 
 ## Desarrollo
 
@@ -9,7 +9,7 @@ npm install
 npm run dev
 ```
 
-Abrir http://127.0.0.1:3000.
+Abrir http://localhost:3000, el mismo origen configurado en `BETTER_AUTH_URL` y en el callback de Google.
 
 ```sh
 npm test
@@ -17,7 +17,9 @@ npm run typecheck
 npm run build
 ```
 
-La compilación exporta la aplicación estática a `out/`. No requiere un servidor de aplicación ni servicios externos. Las fuentes se sirven localmente con `next/font/local`.
+La autenticación requiere un servidor Next.js, PostgreSQL en Neon y un cliente OAuth de Google. Las fuentes se sirven localmente con `next/font/local`. Consultar [la configuración de autenticación](docs/authentication.md) para instalar las dependencias, completar `.env.local`, generar y aplicar las migraciones, y registrar el callback de Google.
+
+El stack acordado para los agentes del proyecto está en [AGENTS.md](AGENTS.md): Next.js, shadcn/ui, Tailwind, React Hook Form, Zod, Zustand, Sanity, Resend, Better Auth, Drizzle ORM y Neon. Las herramientas se incorporan conforme las funcionalidades las necesitan.
 
 ## Comportamiento
 
@@ -29,7 +31,8 @@ La compilación exporta la aplicación estática a `out/`. No requiere un servid
 - El día actual siempre conserva color coral, subrayado y la etiqueta «Hoy», aunque se seleccione otro.
 - Cada día es un botón con estado seleccionado y nombre accesible. Admite Tab, Enter, Espacio, flechas izquierda/derecha, Inicio y Fin.
 - En celular, seleccionar un día desplaza al detalle; «Cambiar día» vuelve al calendario.
-- No utiliza base de datos, cuentas, cookies de aplicación, localStorage, sessionStorage, IndexedDB, historial de actividad ni seguimiento de entrenamientos.
+- El acceso con Google y las sesiones se gestionan con Better Auth y Neon. La rutina requiere una sesión válida comprobada en el servidor.
+- No utiliza localStorage, sessionStorage, IndexedDB, historial de actividad ni seguimiento de entrenamientos.
 
 La primera vista tiene un estado breve de carga para calcular la fecha real en el navegador, evitando congelar la semana en la fecha de compilación o causar diferencias de hidratación. La fecha se obtiene del reloj del dispositivo.
 
@@ -47,7 +50,9 @@ Se muestran los nombres y las anotaciones de series indicadas expresamente en la
 
 ## Validación
 
-Las pruebas cubren ambas rutinas, la transición a lunes a las 05:00 UTC, semanas ISO en el cambio de año, semana 53 → 1, meses y ausencia de ancla en octubre. Revisión visual y de selección de los siete días en navegador a 390 px y 834 px, con navegación de teclado y sin errores de consola.
+Las pruebas cubren ambas rutinas, la transición a lunes a las 05:00 UTC, semanas ISO en el cambio de año, semana 53 → 1, meses y ausencia de ancla en octubre. También verifican la configuración de autenticación, los orígenes permitidos y la ausencia de secretos en los errores de configuración.
+
+El calendario tuvo una revisión visual y de selección de los siete días a 390 px y 834 px. El flujo nuevo de Google todavía requiere instalar las dependencias, configurar Google y Neon y ejecutar la comprobación completa descrita en `docs/authentication.md`.
 
 ## Estilos con Tailwind CSS
 

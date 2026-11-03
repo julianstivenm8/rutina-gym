@@ -74,3 +74,24 @@ export function SunIcon({ size = 20, ...props }: IconProps) {
     <path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
   </svg>;
 }
+
+export function LogOutIcon({ size = 20, ...props }: IconProps) {
+  return <svg viewBox="0 0 24 24" width={size} height={size} {...common} {...props}>
+    <path d="M9 5H5v14h4M9 12h12M17 8l4 4-4 4" />
+  </svg>;
+}
+
+export function SpinnerIcon({ size = 20, ...props }: IconProps) {
+  return <svg viewBox="0 0 24 24" width={size} height={size} {...common} {...props}>
+    <path d="M21 12a9 9 0 1 1-9-9" />
+  </svg>;
+}
+
+export function GoogleIcon({ size = 20, ...props }: IconProps) {
+  return <svg viewBox="0 0 18 18" width={size} height={size} aria-hidden="true" {...props}>
+    <path fill="#4285F4" d="M17.64 9.2045c0-.6382-.0573-1.2518-.1636-1.8409H9v3.4818h4.8436c-.2086 1.125-.8427 2.0782-1.7959 2.7164v2.2582h2.9086c1.7018-1.5668 2.6837-3.8741 2.6837-6.6155Z" />
+    <path fill="#34A853" d="M9 18c2.43 0 4.4673-.8059 5.9564-2.18l-2.9086-2.2582c-.8059.54-1.8368.8591-3.0478.8591-2.3441 0-4.3282-1.5832-5.0359-3.7105H.9573v2.3318A9 9 0 0 0 9 18Z" />
+    <path fill="#FBBC05" d="M3.9641 10.7104A5.41 5.41 0 0 1 3.6818 9c0-.5932.1023-1.1699.2823-1.7104V4.9578H.9573A9 9 0 0 0 0 9c0 1.4523.3477 2.8271.9573 4.0422l3.0068-2.3318Z" />
+    <path fill="#EA4335" d="M9 3.5791c1.3214 0 2.5077.4541 3.4405 1.3468l2.5813-2.5813C13.4632.8927 11.4259 0 9 0A9 9 0 0 0 .9573 4.9578l3.0068 2.3318C4.6718 5.1623 6.6559 3.5791 9 3.5791Z" />
+  </svg>;
+}

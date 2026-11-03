@@ -2,15 +2,16 @@
 
 import { useEffect, useState, type KeyboardEvent } from "react";
 import { ACTIVITIES, getWeekModel, type WeekModel } from "@/lib/routine";
-import { ActivityIcon, DumbbellIcon, InfoIcon } from "./icons";
+import type { AuthenticatedUser } from "@/lib/auth-types";
+import { InfoIcon } from "./icons";
+import { AppHeader } from "./app-header";
 import { RoutineCycle } from "./routine-cycle";
 import { SessionDetail } from "./session-detail";
 import { WeekCalendar } from "./week-calendar";
-import { ThemeToggle } from "./theme-toggle";
 
 type ViewState = { week: WeekModel; selectedIndex: number } | null;
 
-export function WeeklyRoutine() {
+export function WeeklyRoutine({ user }: { user: AuthenticatedUser }) {
   const [view, setView] = useState<ViewState>(null);
 
   useEffect(() => {
@@ -59,18 +60,7 @@ export function WeeklyRoutine() {
   return (
     <div className="mx-auto max-w-[1440px] px-16 wide:px-[70px] compact:px-9 tablet:px-[26px] mobile:max-w-[560px] mobile:px-5 small:px-3.5">
       <a className="fixed -top-20 left-4 z-20 rounded-lg bg-ink px-[18px] py-3 text-surface focus:top-3" href="#week">Ir a la semana</a>
-      <header className="flex min-h-[103px] items-center justify-between gap-4 border-b border-line mobile:min-h-20 mobile:gap-3">
-        <a className="inline-flex items-center gap-2.5 text-[23px] font-[650] tracking-[-1.1px] no-underline mobile:text-[21px]" href="/" aria-label="Mi rutina, inicio">
-          <span className="grid size-[39px] place-items-center rounded-xl bg-sage-dark text-paper mobile:size-[34px] mobile:rounded-[10px] mobile:[&>svg]:size-[23px]"><DumbbellIcon size={26} /></span>
-          <span>mi rutina<span className="text-sage">.</span></span>
-        </a>
-        <div className="flex items-center gap-5 mobile:gap-3">
-          <div className="flex items-center gap-[9px] text-[12px] text-sage mobile:gap-[5px] mobile:text-[10px] mobile:[&>svg]:size-5 max-[420px]:[&>span]:hidden">
-            <ActivityIcon activity="rest" size={23} /><span>Constancia, a tu ritmo.</span>
-          </div>
-          <ThemeToggle />
-        </div>
-      </header>
+      <AppHeader user={user} />
 
       <main>
         <WeekCalendar week={week} selectedIndex={view?.selectedIndex} onSelectDay={selectDay} onDayKeyDown={handleDayKey} />
