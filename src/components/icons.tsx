@@ -9,6 +9,7 @@ const common = {
 };
 
 export function ActivityIcon({ activity, size = 48, ...props }: IconProps & { activity: ActivityId }) {
+  activity = activity === "strength" ? "upper" : activity === "cardio" ? "zone2" : activity;
   return (
     <svg viewBox="0 0 64 64" width={size} height={size} {...common} {...props}>
       {activity === "upper" && <>

@@ -19,7 +19,7 @@ function CalendarDay({
   onClick: () => void;
   onKeyDown: (event: KeyboardEvent<HTMLButtonElement>) => void;
 }) {
-  const activity = ACTIVITIES[day.activityId];
+  const activity = day.activity ?? ACTIVITIES[day.activityId];
 
   return (
     <button
@@ -64,10 +64,10 @@ function CalendarDay({
         <ActivityIcon activity={day.activityId} size={54} />
       </span>
       <span className="min-h-[27px] self-center font-heading text-[23px] leading-[1.15] font-semibold whitespace-nowrap compact:text-[21px] tablet:flex tablet:min-h-11 tablet:items-center tablet:text-center tablet:text-[19px] tablet:whitespace-normal mobile:min-h-auto mobile:text-[24px] mobile:group-last/day:col-start-3 mobile:group-last/day:row-[1/3] mobile:group-last/day:self-end mobile:group-last/day:justify-self-start small:flex small:min-h-[50px] small:w-full small:items-center small:justify-center small:text-center small:text-[22px] small:whitespace-normal mobile:group-last/day:text-[24px] small:group-last/day:min-h-auto small:group-last/day:w-auto">
-        {activity.calendarTitle}
+        <span className="max-w-full break-words whitespace-normal text-center">{activity.calendarTitle}</span>
       </span>
       <span className="mt-[7px] mb-6 block self-center text-center text-[10px] text-muted touch:text-[11px] tablet:mb-4 mobile:mt-[5px] mobile:mb-[13px] mobile:group-last/day:col-start-3 mobile:group-last/day:row-start-3 mobile:group-last/day:mt-1 mobile:group-last/day:mb-0 mobile:group-last/day:justify-self-start">
-        {activity.id === "upper" || activity.id === "lower" ? activity.category : activity.calendarMeta}
+        {activity.id === "upper" || activity.id === "lower" ? activity.category : activity.calendarMeta.split(" · ")[0]}
       </span>
       <span className={cn(
         "flex w-full items-center justify-between gap-1 border-t pt-[11px] text-[10px] [&>svg]:flex-none compact:text-[8px] touch:text-[11px] tablet:[&>span]:max-w-[42px] mobile:pt-[9px] mobile:group-last/day:col-span-full mobile:group-last/day:mt-3",
@@ -89,13 +89,13 @@ export function WeekCalendar({ week, selectedIndex, onSelectDay, onDayKeyDown }:
           "flex min-h-[74px] items-center justify-between gap-[15px] border-b px-6 py-[18px] tablet:p-4 mobile:items-start mobile:gap-2.5 mobile:p-4",
           isRoutineTwo ? "border-week-lavender-border bg-lavender-light" : "border-week-border bg-sage-light",
         )}>
-          <div className="flex items-center gap-5 tablet:gap-[13px] mobile:flex-col mobile:items-start mobile:gap-[11px]">
+          <div className="flex min-w-0 flex-1 items-center gap-5 tablet:gap-[13px] mobile:flex-col mobile:items-start mobile:gap-[11px]">
             <span className={cn(
-              "rounded-[7px] px-4 pt-[5px] pb-1.5 font-heading text-[23px] leading-[1.2] whitespace-nowrap text-surface mobile:rounded-md mobile:px-[13px] mobile:py-[5px]",
+              "rounded-[7px] px-4 pt-[5px] pb-1.5 font-heading text-[23px] leading-[1.2] max-w-full break-words whitespace-normal text-surface mobile:rounded-md mobile:px-[13px] mobile:py-[5px]",
               isRoutineTwo ? "bg-lavender-strong" : "bg-sage-dark",
-            )}>Rutina {week.routine}</span>
-            <p className={cn("text-[12px] [&>strong]:font-[650] tablet:text-[10px] mobile:text-[11px] mobile:whitespace-nowrap", isRoutineTwo ? "text-lavender-ink" : "text-sage-dark")}>
-              <strong>{week.routine === 1 ? "2" : "1"}</strong> de tren superior <span className="mx-[9px] text-focus-divider touch:mx-[5px]">/</span> <strong>{week.routine === 1 ? "1" : "2"}</strong> de tren inferior
+            )}>{week.routineName ?? "Rutina " + week.routine}</span>
+            <p className={cn("text-[12px] [&>strong]:font-[650] tablet:text-[10px] mobile:text-[11px] break-words", isRoutineTwo ? "text-lavender-ink" : "text-sage-dark")}>
+              {week.planName ?? "Fuerza y cardio"}
             </p>
           </div>
           <div className={cn("inline-flex items-center gap-[9px] text-[12px] whitespace-nowrap mobile:gap-[7px] mobile:pt-[9px] mobile:text-[11px]", isRoutineTwo ? "text-lavender-ink" : "text-sage-dark")}>

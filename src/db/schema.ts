@@ -1,4 +1,5 @@
-import { bigint, boolean, index, integer, pgTable, text, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
+import { bigint, boolean, foreignKey, index, integer, jsonb, pgTable, text, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
+import type { RoutineDefinition } from "../lib/routine-definition";
 
 const timestamps = () => ({
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
@@ -56,3 +57,22 @@ export const rateLimit = pgTable("auth_rate_limit", {
   count: integer("count").notNull(),
   lastRequest: bigint("last_request", { mode: "number" }).notNull(),
 });
+
+export const routinePlan = pgTable("routine_plan", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+  definition: jsonb("definition").$type<RoutineDefinition>().notNull(),
+  ...timestamps(),
+}, table => [
+  index("routine_plan_user_idx").on(table.userId),
+  uniqueIndex("routine_plan_id_user_idx").on(table.id, table.userId),
+]);
+
+// One row per account guarantees one active routine during concurrent activations.
+export const routineSelection = pgTable("routine_selection", {
+  userId: text("user_id").primaryKey().references(() => user.id, { onDelete: "cascade" }),
+  routineId: text("routine_id").notNull(),
+}, table => [
+  foreignKey({ columns: [table.routineId, table.userId], foreignColumns: [routinePlan.id, routinePlan.userId], name: "routine_selection_owner_fk" }),
+  index("routine_selection_routine_user_idx").on(table.routineId, table.userId),
+]);

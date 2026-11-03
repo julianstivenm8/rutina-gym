@@ -10,7 +10,7 @@ export function CardHeader({ className, ...props }: ComponentProps<"div">) {
 }
 
 export function CardTitle({ className, ...props }: ComponentProps<"div">) {
-  return <div data-slot="card-title" className={cn("font-heading text-[30px] leading-[1.15] font-semibold", className)} {...props} />;
+  return <div data-slot="card-title" className={cn("font-heading text-[30px] leading-[1.15] font-semibold break-words", className)} {...props} />;
 }
 
 export function CardDescription({ className, ...props }: ComponentProps<"p">) {
