@@ -1,7 +1,10 @@
 import "server-only";
 import { z } from "zod";
 import { getCurrentSession } from "./auth-session";
-import { routineDefinitionSchema } from "./routine-definition";
+import {
+  RoutineDefinitionError,
+  routineDefinitionSchema,
+} from "./routine-definition";
 import { requireAuthEnvironment } from "./auth-environment";
 
 export const saveRoutineSchema = z
@@ -38,7 +41,9 @@ export async function withRoutineUser(
       );
     }
     return await action(session.user.id);
-  } catch {
+  } catch (error) {
+    if (error instanceof RoutineDefinitionError)
+      return routineResponse({ error: error.message }, 400);
     // Do not log database parameters or session information.
     return routineResponse(
       { error: "No pudimos acceder a tus rutinas. Vuelve a intentarlo." },

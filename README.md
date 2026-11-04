@@ -33,7 +33,8 @@ El stack acordado para los agentes del proyecto está en [AGENTS.md](AGENTS.md):
 - Cada día es un botón con estado seleccionado y nombre accesible. Admite Tab, Enter, Espacio, flechas izquierda/derecha, Inicio y Fin.
 - En celular, seleccionar un día desplaza al detalle; «Cambiar día» vuelve al calendario.
 - El acceso con Google y las sesiones se gestionan con Better Auth y Neon. La rutina requiere una sesión válida comprobada en el servidor.
-- No utiliza localStorage, sessionStorage, IndexedDB, historial de actividad ni seguimiento de entrenamientos.
+- Los pesos opcionales por ejercicio se guardan en Neon con su unidad y fecha; el detalle permite ver su evolución. Consultar [Pesos por ejercicio](docs/weights.md).
+- No utiliza localStorage, sessionStorage ni IndexedDB.
 
 La primera vista tiene un estado breve de carga para calcular la fecha real en el navegador, evitando congelar la semana en la fecha de compilación o causar diferencias de hidratación. La fecha se obtiene del reloj del dispositivo.
 

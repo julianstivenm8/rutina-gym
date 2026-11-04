@@ -9,10 +9,11 @@ import { AppHeader } from "./app-header";
 import { RoutineCycle } from "./routine-cycle";
 import { SessionDetail } from "./session-detail";
 import { WeekCalendar } from "./week-calendar";
+import { WeightProgressProvider } from "./weights/weight-progress-provider";
 
 type ViewState = { week: WeekModel; selectedIndex: number } | null;
 
-export function WeeklyRoutine({ user, definition }: { user: AuthenticatedUser; definition: RoutineDefinition }) {
+export function WeeklyRoutine({ user, definition, routineId }: { user: AuthenticatedUser; definition: RoutineDefinition; routineId: string }) {
   const [view, setView] = useState<ViewState>(null);
 
   useEffect(() => {
@@ -58,7 +59,7 @@ export function WeeklyRoutine({ user, definition }: { user: AuthenticatedUser; d
   const selectedActivity = selectedDay ? selectedDay.activity ?? ACTIVITIES[selectedDay.activityId] : null;
   const selectedIsToday = selectedDay?.dateKey === week?.todayKey;
 
-  return (
+  return (<WeightProgressProvider key={routineId} routineId={routineId}>
     <div className="mx-auto max-w-[1440px] px-16 wide:px-[70px] compact:px-9 tablet:px-[26px] mobile:max-w-[560px] mobile:px-5 small:px-3.5">
       <a className="fixed -top-20 left-4 z-20 rounded-lg bg-ink px-[18px] py-3 text-surface focus:top-3" href="#week">Ir a la semana</a>
       <AppHeader user={user} />
@@ -81,6 +82,6 @@ export function WeeklyRoutine({ user, definition }: { user: AuthenticatedUser; d
         <span>Un poco de fuerza. Un poco de cardio. Tu equilibrio.</span>
         <span className="inline-flex items-center gap-1.5 whitespace-nowrap"><span className="size-1 rounded-full bg-sage" />Fecha de Colombia</span>
       </footer>
-    </div>
+    </div></WeightProgressProvider>
   );
 }

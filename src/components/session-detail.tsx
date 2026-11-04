@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import type { Activity, WeekDay } from "@/lib/routine";
 import { cn } from "@/lib/utils";
 import { ActivityIcon, ArrowIcon, ClockIcon } from "./icons";
+import { ExerciseWeightList } from "./weights/exercise-weight-list";
 
 const sessionTones = {
   sage: { icon: "border-sage-detail-border bg-sage-detail-surface text-sage", label: "text-sage" },
@@ -23,16 +24,9 @@ function SessionFact({ icon, label, children }: { icon: ReactNode; label: string
   );
 }
 
-function SessionContent({ activity, exercises, notes, custom }: { activity: Activity; exercises: readonly string[]; notes?: readonly string[]; custom?: boolean }) {
+function SessionContent({ activity, exercises, notes, ids, custom }: { activity: Activity; exercises: readonly string[]; notes?: readonly string[]; ids?: readonly (string | undefined)[]; custom?: boolean }) {
   if (activity.id === "upper" || activity.id === "lower" || activity.id === "strength") {
-    return (
-      <ul className="m-0 list-none divide-y divide-exercise-border rounded-[9px] border border-exercise-border bg-exercise-surface p-0" aria-label="Ejercicios del día">
-        {exercises.map((exercise, index) => <li className="flex items-center gap-3 px-[17px] py-3 text-[14px] leading-[1.6] text-ink mobile:gap-2.5 mobile:px-3.5 mobile:text-[13px]" key={index}>
-          <span className="size-1 shrink-0 rounded-full bg-sage" aria-hidden="true" />
-          <span className="min-w-0 break-words">{exercise}{notes?.[index] && <span className="mt-1 block text-xs text-muted">{notes[index]}</span>}</span>
-        </li>)}
-      </ul>
-    );
+    return <ExerciseWeightList exercises={exercises} notes={notes} ids={ids} />;
   }
 
   if (custom && activity.id !== "rest") {
@@ -92,9 +86,9 @@ export function SessionDetail({ day, activity, isToday, onBackToToday }: {
   const tone = sessionTones[activity.color];
 
   return (
-    <section id="session-detail" className="overflow-hidden rounded-[15px] border border-line bg-surface px-7 pt-[23px] pb-[26px] compact:p-[21px] tablet:px-7 tablet:py-6 mobile:rounded-xl mobile:p-5 small:p-4" aria-labelledby="session-title" aria-live="polite" aria-atomic="true">
+    <section id="session-detail" className="overflow-hidden rounded-[15px] border border-line bg-surface px-7 pt-[23px] pb-[26px] compact:p-[21px] tablet:px-7 tablet:py-6 mobile:rounded-xl mobile:p-5 small:p-4" aria-labelledby="session-title">
       <div className="flex items-center gap-2.5 border-b border-line pb-5 text-[12px] mobile:pb-[17px]">
-        <span className="first-letter:uppercase">{day.fullDate}</span>
+        <span className="first-letter:uppercase" aria-live="polite" aria-atomic="true">{day.fullDate}</span>
         {isToday && <span className="rounded-sm bg-coral-light px-[7px] py-[3px] text-[9px] text-today-label">Hoy</span>}
         <a className="ml-auto hidden min-h-7 items-center text-[11px] text-sage-dark underline-offset-[3px] mobile:inline-flex" href="#week">Cambiar día</a>
       </div>
@@ -113,7 +107,7 @@ export function SessionDetail({ day, activity, isToday, onBackToToday }: {
           </p>
         </div>
       </div>
-      <SessionContent activity={activity} exercises={day.exercises} notes={day.exerciseNotes} custom={day.custom} />
+      <SessionContent activity={activity} exercises={day.exercises} notes={day.exerciseNotes} ids={day.exerciseIds} custom={day.custom} />
       {!isToday && <button className="mt-3 flex min-h-11 items-center gap-2 border-0 bg-transparent px-0 py-1.5 text-[11px] text-sage-dark" type="button" onClick={onBackToToday}>
         Volver a hoy<ArrowIcon size={17} />
       </button>}

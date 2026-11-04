@@ -152,6 +152,7 @@ export type WeekDay = {
   exercises: readonly string[];
   activity?: Activity;
   exerciseNotes?: readonly string[];
+  exerciseIds?: readonly (string | undefined)[];
   custom?: boolean;
 };
 export type WeekModel = {
@@ -246,6 +247,7 @@ export function getWeekModel(instant: Date = new Date(), definition?: RoutineDef
         activity: { ...base, title: saved.title, calendarTitle: saved.title, description: saved.description, calendarMeta: saved.duration },
         exercises: saved.exercises.map(exercise => exercise.name),
         exerciseNotes: saved.exercises.map(exercise => exercise.note),
+        exerciseIds: saved.exercises.map(exercise => exercise.id),
       };
     }),
   };

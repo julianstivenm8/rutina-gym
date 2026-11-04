@@ -99,7 +99,16 @@ test(
             const body = await response.json();
             assert.equal(body.routines.length, 1);
             assert.equal(body.routines[0].active, true);
-            assert.deepEqual(body.routines[0].definition, definition);
+            const savedDefinition = structuredClone(
+              body.routines[0].definition,
+            );
+            for (const week of savedDefinition.weeks)
+              for (const day of week.days)
+                for (const exercise of day.exercises) {
+                  assert.equal(typeof exercise.id, "string");
+                  delete exercise.id;
+                }
+            assert.deepEqual(savedDefinition, definition);
             initial.push(body.routines[0].id);
           }
           assert.notEqual(initial[0], initial[1]);

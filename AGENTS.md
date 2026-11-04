@@ -33,7 +33,8 @@ Este es el stack elegido para el proyecto. Usar cada herramienta cuando la funci
 - Conservar nombres, anotaciones y orden de los ejercicios suministrados por el usuario. Las listas dependen de la rutina y del día.
 - La hoja «Rutinas Fuerza cardio» es una referencia de contenido; no modificarla ni añadir una sincronización en ejecución salvo que el usuario lo solicite.
 - No inventar ejercicios, series, repeticiones, pesos ni pulsaciones objetivo.
-- No añadir historial de entrenamientos, seguimiento, notificaciones ni integraciones ajenas a la tarea solicitada.
+- El registro opcional de pesos por ejercicio está autorizado: conservar cada cambio con unidad y fecha por cuenta, sin inventar valores. Las estadísticas se desarrollarán en otra feature.
+- No añadir historial de sesiones, seguimiento de entrenamientos completados, notificaciones ni integraciones ajenas a la tarea solicitada.
 
 ## Comprobaciones
 

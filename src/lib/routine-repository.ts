@@ -4,6 +4,7 @@ import { and, desc, eq } from "drizzle-orm";
 import { getDatabase } from "@/db";
 import { routinePlan, routineSelection } from "@/db/schema";
 import { getDefaultRoutineDefinition } from "./routine";
+import { prepareExerciseTracks } from "./exercise-tracks";
 import {
   routineDefinitionSchema,
   type RoutineDefinition,
@@ -22,10 +23,14 @@ export async function ensureDefaultRoutine(userId: string) {
     )
     .where(and(eq(routinePlan.id, id), eq(routinePlan.userId, userId)));
   if (initialized) return;
+  const definition = await prepareExerciseTracks(
+    userId,
+    getDefaultRoutineDefinition(),
+  );
   await db.batch([
     db
       .insert(routinePlan)
-      .values({ id, userId, definition: getDefaultRoutineDefinition() })
+      .values({ id, userId, definition })
       .onConflictDoNothing(),
     db
       .insert(routineSelection)
@@ -67,7 +72,7 @@ export async function findRoutine(userId: string, id: string) {
 export async function getActiveRoutine(userId: string) {
   await ensureDefaultRoutine(userId);
   const [row] = await getDatabase()
-    .select({ definition: routinePlan.definition })
+    .select({ id: routinePlan.id, definition: routinePlan.definition })
     .from(routineSelection)
     .innerJoin(
       routinePlan,
@@ -78,7 +83,10 @@ export async function getActiveRoutine(userId: string) {
     )
     .where(eq(routineSelection.userId, userId));
   if (!row) throw new Error("No hay una rutina activa para esta cuenta.");
-  return routineDefinitionSchema.parse(row.definition);
+  return {
+    id: row.id,
+    definition: routineDefinitionSchema.parse(row.definition),
+  };
 }
 
 export async function saveRoutine(
@@ -91,6 +99,7 @@ export async function saveRoutine(
   const db = getDatabase();
   const id = existingId ?? randomUUID();
   if (existingId && !(await findRoutine(userId, existingId))) return null;
+  definition = await prepareExerciseTracks(userId, definition);
   const write = existingId
     ? db
         .update(routinePlan)

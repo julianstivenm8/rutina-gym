@@ -8,6 +8,6 @@ export const dynamic = "force-dynamic";
 export default async function Home() {
   const session = await getCurrentSession();
   if (!session) redirect("/iniciar-sesion");
-  const definition = await getActiveRoutine(session.user.id);
-  return <WeeklyRoutine definition={definition} user={{ name: session.user.name, email: session.user.email }} />;
+  const active = await getActiveRoutine(session.user.id);
+  return <WeeklyRoutine routineId={active.id} definition={active.definition} user={{ name: session.user.name, email: session.user.email }} />;
 }

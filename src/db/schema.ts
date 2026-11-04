@@ -1,4 +1,5 @@
-import { bigint, boolean, foreignKey, index, integer, jsonb, pgTable, text, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
+import { bigint, boolean, check, foreignKey, index, integer, jsonb, numeric, pgTable, text, timestamp, unique, uniqueIndex } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 import type { RoutineDefinition } from "../lib/routine-definition";
 
 const timestamps = () => ({
@@ -75,4 +76,38 @@ export const routineSelection = pgTable("routine_selection", {
 }, table => [
   foreignKey({ columns: [table.routineId, table.userId], foreignColumns: [routinePlan.id, routinePlan.userId], name: "routine_selection_owner_fk" }),
   index("routine_selection_routine_user_idx").on(table.routineId, table.userId),
+]);
+
+export const exerciseTrack = pgTable("exercise_track", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+  nameKey: text("name_key").notNull(),
+  initialName: text("initial_name").notNull(),
+  version: integer("version").default(0).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+}, table => [
+  unique("exercise_track_owner_unique").on(table.id, table.userId),
+  unique("exercise_track_name_unique").on(table.userId, table.nameKey),
+  check("exercise_track_version_check", sql`${table.version} >= 0`),
+]);
+
+export const exerciseWeight = pgTable("exercise_weight", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+  exerciseId: text("exercise_id").notNull(),
+  requestId: text("request_id").notNull(),
+  amount: numeric("amount", { precision: 7, scale: 3 }).notNull(),
+  unit: text("unit").$type<"kg" | "lb">().notNull(),
+  version: integer("version").notNull(),
+  routineId: text("routine_id").notNull(),
+  routineName: text("routine_name").notNull(),
+  exerciseName: text("exercise_name").notNull(),
+  recordedAt: timestamp("recorded_at", { withTimezone: true }).defaultNow().notNull(),
+}, table => [
+  foreignKey({ columns: [table.exerciseId, table.userId], foreignColumns: [exerciseTrack.id, exerciseTrack.userId], name: "exercise_weight_owner_fk" }).onDelete("cascade"),
+  unique("exercise_weight_request_unique").on(table.userId, table.requestId),
+  unique("exercise_weight_version_unique").on(table.exerciseId, table.userId, table.version),
+  check("exercise_weight_amount_check", sql`${table.amount} >= 0 AND ${table.amount} <= 9999.999`),
+  check("exercise_weight_unit_check", sql`${table.unit} IN ('kg', 'lb')`),
+  check("exercise_weight_version_check", sql`${table.version} > 0`),
 ]);

@@ -12,7 +12,8 @@
     "auth:check": "node --env-file-if-exists=.env.local --experimental-strip-types scripts/check-auth-environment.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "test:routines": "node --env-file-if-exists=.env.local --experimental-strip-types --test tests/routines.integration.test.ts"
+    "test:routines": "node --env-file-if-exists=.env.local --experimental-strip-types --test tests/routines.integration.test.ts",
+    "test:weights": "node --env-file-if-exists=.env.local --experimental-strip-types --test tests/weights.integration.test.ts"
   },
   "dependencies": {
     "@better-auth/drizzle-adapter": "1.7.15",
@@ -31,7 +32,8 @@
     "react-hook-form": "^7.91.0",
     "server-only": "0.0.1",
     "tailwind-merge": "^3.7.0",
-    "zod": "^4.6.5"
+    "zod": "^4.6.5",
+    "zustand": "^5.0.16"
   },
   "devDependencies": {
     "@next/env": "^16.4.3",

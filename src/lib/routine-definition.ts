@@ -15,14 +15,22 @@ const requiredText = (max: number) =>
     .max(max, "Usa hasta " + max + " caracteres.")
     .refine((value) => value.trim().length > 0, "Escribe un nombre.");
 export const exerciseSchema = z
-  .object({ name: requiredText(200), note: z.string().max(500, "Usa hasta 500 caracteres en las notas.") })
+  .object({
+    id: z.string().uuid().optional(),
+    name: requiredText(200),
+    note: z.string().max(500, "Usa hasta 500 caracteres en las notas."),
+  })
   .strict();
 export const trainingDaySchema = z
   .object({
     activityId: z.enum(activityIds),
     title: requiredText(100),
-    description: z.string().max(1500, "Usa hasta 1500 caracteres en las notas del día."),
-    duration: z.string().max(100, "Usa hasta 100 caracteres para la duración o estructura."),
+    description: z
+      .string()
+      .max(1500, "Usa hasta 1500 caracteres en las notas del día."),
+    duration: z
+      .string()
+      .max(100, "Usa hasta 100 caracteres para la duración o estructura."),
     exercises: z
       .array(exerciseSchema)
       .max(50, "Puedes añadir hasta 50 ejercicios por día."),
@@ -92,6 +100,8 @@ export type SavedRoutine = {
   definition: RoutineDefinition;
   active: boolean;
 };
+
+export class RoutineDefinitionError extends Error {}
 
 export function blankTrainingDay(): TrainingDay {
   return {

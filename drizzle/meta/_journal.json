@@ -15,6 +15,13 @@
       "when": 1793727624212,
       "tag": "0001_routines",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793798463589,
+      "tag": "0002_exercise_weights",
+      "breakpoints": true
     }
   ]
 }
