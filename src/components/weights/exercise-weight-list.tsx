@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Check,
   ChevronDown,
-  History,
+  ChevronUp,
   Loader2,
   MoveRight,
   RotateCcw,
@@ -14,16 +14,13 @@ import {
 } from "lucide-react";
 import {
   formatWeight,
-  weightChange,
   weightFormSchema,
   type ExerciseProgress,
   type WeightUnit,
   type WeightRecord,
 } from "@/lib/weight-progress";
-import { cn } from "@/lib/utils";
 import { useWeightProgress } from "./weight-progress-provider";
 import { Button } from "../ui/button";
-import { Badge } from "../ui/badge";
 import { Alert, AlertDescription } from "../ui/alert";
 import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field";
 import {
@@ -230,7 +227,6 @@ function ExerciseWeightRow({
     (!latest ||
       Number(amount.replace(",", ".")) !== Number(latest.amount) ||
       unit !== latest.unit);
-  const delta = progress ? weightChange(progress, latest?.unit ?? "kg") : null;
   const fieldId = "exercise-weight-" + useId();
   async function submit(values: { amount: string; unit: WeightUnit }) {
     if (!id || !ready) return;
@@ -286,33 +282,14 @@ function ExerciseWeightRow({
     <li className="border-b border-exercise-border last:border-0">
       <Collapsible open={open} onOpenChange={setOpen}>
         <form noValidate onSubmit={handleSubmit(submit)}>
-          <FieldGroup className="grid grid-cols-[minmax(0,1fr)_148px_44px_44px] items-start gap-2 px-[17px] py-4 mobile:grid-cols-[minmax(0,1fr)_44px_44px] mobile:px-3.5">
-            <div className="min-w-0 self-center pr-3 mobile:col-span-3 mobile:mb-1">
-              <p className="break-words text-[14px] leading-relaxed mobile:text-[13px]">
+          <FieldGroup className="grid grid-cols-[minmax(0,1fr)_148px_44px] items-start gap-2 px-[17px] py-4 mobile:grid-cols-[minmax(0,1fr)_44px] mobile:px-3.5">
+            <div className="min-w-0 self-center pr-3 mobile:col-span-2 mobile:mb-1">
+              <p className="break-words text-lg font-medium leading-relaxed mobile:text-base">
                 {name}
               </p>
               {note && (
                 <p className="mt-1 break-words text-xs text-muted">{note}</p>
               )}
-              <div className="mt-1.5 flex flex-wrap items-center gap-2 text-[10px] text-muted">
-                {latest ? (
-                  <>
-                    <span>
-                      Último: {formatWeight(latest.amount)} {latest.unit}
-                    </span>
-                    {delta !== null && (
-                      <Badge variant="secondary" className="py-0 text-[10px]">
-                        {delta > 0 ? "+" : ""}
-                        {formatWeight(delta)} {latest.unit} desde el inicio
-                      </Badge>
-                    )}
-                  </>
-                ) : (
-                  <span>
-                    {ready ? "Sin peso registrado" : "Cargando tus pesos…"}
-                  </span>
-                )}
-              </div>
             </div>
             <Field data-invalid={!!errors.amount} className="gap-1">
               <FieldLabel htmlFor={fieldId} className="sr-only">
@@ -346,15 +323,21 @@ function ExerciseWeightRow({
                   }}
                 />
                 <InputGroupAddon align="inline-end">
-                  <InputGroupButton
-                    size="sm"
-                    aria-label={"Cambiar unidad de " + name}
-                    onClick={() => setOpen(true)}
-                    disabled={pending || !ready}
-                  >
-                    {unit}
-                    <ChevronDown data-icon="inline-end" />
-                  </InputGroupButton>
+                  <CollapsibleTrigger asChild>
+                    <InputGroupButton
+                      size="sm"
+                      aria-label={"Ver evolución de " + name}
+                      title={open ? "Ocultar evolución" : "Ver evolución y cambiar unidad"}
+                      disabled={pending || !ready}
+                    >
+                      {unit}
+                      {open ? (
+                        <ChevronUp data-icon="inline-end" />
+                      ) : (
+                        <ChevronDown data-icon="inline-end" />
+                      )}
+                    </InputGroupButton>
+                  </CollapsibleTrigger>
                 </InputGroupAddon>
               </InputGroup>
               <FieldError id={fieldId + "-error"}>
@@ -377,16 +360,6 @@ function ExerciseWeightRow({
                 <Check size={18} />
               )}
             </Button>
-            <CollapsibleTrigger asChild>
-              <Button
-                size="icon"
-                variant="ghost"
-                aria-label={"Ver evolución de " + name}
-                title="Ver evolución"
-              >
-                <History size={19} />
-              </Button>
-            </CollapsibleTrigger>
             {(errors.root?.message || notice) && (
               <div className="col-span-full">
                 <FieldError>{errors.root?.message}</FieldError>
@@ -471,11 +444,6 @@ export function ExerciseWeightList({
           />
         ))}
       </ul>
-      <p className="mt-3 text-[10px] leading-relaxed text-muted">
-        Usa siempre el mismo criterio para comparar tus registros: peso total o
-        por mancuerna. Cada cambio se guarda cuando pulsas el botón junto al
-        peso.
-      </p>
     </div>
   );
 }
