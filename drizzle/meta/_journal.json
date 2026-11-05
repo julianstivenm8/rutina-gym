@@ -22,6 +22,13 @@
       "when": 1793798463589,
       "tag": "0002_exercise_weights",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1793885304717,
+      "tag": "0003_body_measurements",
+      "breakpoints": true
     }
   ]
 }

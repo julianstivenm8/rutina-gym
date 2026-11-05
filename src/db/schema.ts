@@ -1,6 +1,7 @@
-import { bigint, boolean, check, foreignKey, index, integer, jsonb, numeric, pgTable, text, timestamp, unique, uniqueIndex } from "drizzle-orm/pg-core";
+import { bigint, boolean, check, date, foreignKey, index, integer, jsonb, numeric, pgTable, text, timestamp, unique, uniqueIndex } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import type { RoutineDefinition } from "../lib/routine-definition";
+import type { BodyGender, BodyMetric } from "../lib/body";
 
 const timestamps = () => ({
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
@@ -110,4 +111,41 @@ export const exerciseWeight = pgTable("exercise_weight", {
   check("exercise_weight_amount_check", sql`${table.amount} >= 0 AND ${table.amount} <= 9999.999`),
   check("exercise_weight_unit_check", sql`${table.unit} IN ('kg', 'lb')`),
   check("exercise_weight_version_check", sql`${table.version} > 0`),
+]);
+
+export const bodyProfile = pgTable("body_profile", {
+  userId: text("user_id").primaryKey().references(() => user.id, { onDelete: "cascade" }),
+  gender: text("gender").$type<BodyGender>().default("unspecified").notNull(),
+  version: integer("version").default(0).notNull(),
+}, table => [
+  check("body_profile_gender_check", sql`${table.gender} IN ('unspecified', 'male', 'female')`),
+  check("body_profile_version_check", sql`${table.version} >= 0`),
+]);
+
+export const bodyRecord = pgTable("body_record", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+  requestId: text("request_id").notNull(),
+  gender: text("gender").$type<BodyGender>().notNull(),
+  measuredOn: date("measured_on").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+}, table => [
+  unique("body_record_owner_unique").on(table.id, table.userId),
+  unique("body_record_request_unique").on(table.userId, table.requestId),
+  index("body_record_user_date_idx").on(table.userId, table.measuredOn, table.createdAt, table.id),
+  check("body_record_gender_check", sql`${table.gender} IN ('unspecified', 'male', 'female')`),
+  check("body_record_date_check", sql`${table.measuredOn} >= '1900-01-01'::date`),
+]);
+
+export const bodyMeasurement = pgTable("body_measurement", {
+  recordId: text("record_id").notNull(),
+  userId: text("user_id").notNull(),
+  metric: text("metric").$type<BodyMetric>().notNull(),
+  amount: numeric("amount", { precision: 7, scale: 3 }).notNull(),
+}, table => [
+  foreignKey({ columns: [table.recordId, table.userId], foreignColumns: [bodyRecord.id, bodyRecord.userId], name: "body_measurement_owner_fk" }).onDelete("cascade"),
+  unique("body_measurement_record_metric_unique").on(table.recordId, table.metric),
+  index("body_measurement_user_metric_idx").on(table.userId, table.metric, table.recordId),
+  check("body_measurement_metric_check", sql`${table.metric} IN ('weightKg', 'heightCm', 'neck', 'shoulders', 'chest', 'waist', 'hips', 'leftArm', 'rightArm', 'leftForearm', 'rightForearm', 'leftThigh', 'rightThigh', 'leftCalf', 'rightCalf')`),
+  check("body_measurement_amount_check", sql`${table.amount} > 0 AND ((${table.metric} = 'weightKg' AND ${table.amount} <= 600) OR (${table.metric} <> 'weightKg' AND ${table.amount} <= 300))`),
 ]);

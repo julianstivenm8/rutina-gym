@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CalendarDays, Layers3, Menu, Plus } from "lucide-react";
+import { CalendarDays, Layers3, Menu, Plus, PersonStanding } from "lucide-react";
 import { Button } from "./ui/button";
 import {
   Sheet,
@@ -30,6 +30,12 @@ export function AppNavigation({ user }: { user: AuthenticatedUser }) {
       title: "Mis rutinas",
       description: "Tus ciclos, a tu ritmo",
       icon: Layers3,
+    },
+    {
+      href: "/mi-cuerpo",
+      title: "Mi cuerpo",
+      description: "Tus medidas y tu recorrido",
+      icon: PersonStanding,
     },
     {
       href: "/rutinas/nueva",
