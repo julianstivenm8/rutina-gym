@@ -6,6 +6,7 @@ import { nextCookies } from "better-auth/next-js";
 import { getDatabase } from "@/db";
 import * as schema from "@/db/schema";
 import { requireAuthEnvironment } from "./auth-environment";
+import { FRESH_ACCOUNT_SESSION_SECONDS } from "./account-settings";
 
 function createAuth() {
   const environment = requireAuthEnvironment();
@@ -17,6 +18,9 @@ function createAuth() {
     trustedOrigins: [environment.BETTER_AUTH_URL],
     database: drizzleAdapter(getDatabase(), { provider: "pg", schema }),
     emailAndPassword: { enabled: false },
+    user: { deleteUser: { enabled: true } },
+    // Account deletion goes through our explicit account confirmation, then Better Auth.
+    disabledPaths: ["/delete-user", "/delete-user/callback"],
     socialProviders: {
       google: {
         clientId: environment.GOOGLE_CLIENT_ID,
@@ -28,6 +32,7 @@ function createAuth() {
       expiresIn: 60 * 60 * 24 * 7,
       updateAge: 60 * 60 * 24,
       cookieCache: { enabled: false },
+      freshAge: FRESH_ACCOUNT_SESSION_SECONDS,
     },
     rateLimit: { storage: "database" },
     plugins: [nextCookies()],

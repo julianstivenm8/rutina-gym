@@ -35,6 +35,7 @@ El stack acordado para los agentes del proyecto está en [AGENTS.md](AGENTS.md):
 - El acceso con Google y las sesiones se gestionan con Better Auth y Neon. La rutina requiere una sesión válida comprobada en el servidor.
 - Los pesos opcionales por ejercicio se guardan en Neon con su unidad y fecha; el detalle permite ver su evolución. Consultar [Pesos por ejercicio](docs/weights.md).
 - «Mi cuerpo» guarda medidas corporales privadas por fecha, con figuras interactivas de hombre y mujer, datos opcionales, IMC calculado e historial con borrado. Consultar [Mi cuerpo](docs/body.md).
+- «Configuración», al pie del menú, permite elegir la apariencia, consultar y cerrar sesiones y eliminar la cuenta con confirmación. Consultar [Configuración de la cuenta](docs/settings.md).
 - No utiliza localStorage, sessionStorage ni IndexedDB.
 
 La primera vista tiene un estado breve de carga para calcular la fecha real en el navegador, evitando congelar la semana en la fecha de compilación o causar diferencias de hidratación. La fecha se obtiene del reloj del dispositivo.

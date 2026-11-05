@@ -1,7 +1,14 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CalendarDays, Layers3, Menu, Plus, PersonStanding } from "lucide-react";
+import {
+  CalendarDays,
+  Layers3,
+  Menu,
+  Plus,
+  PersonStanding,
+  Settings,
+} from "lucide-react";
 import { Button } from "./ui/button";
 import {
   Sheet,
@@ -92,12 +99,32 @@ export function AppNavigation({ user }: { user: AuthenticatedUser }) {
             </SheetClose>
           ))}
         </nav>
-        <SheetFooter className="border-t border-line p-7">
-          <p className="text-sm font-medium">{user.name || "Mi cuenta"}</p>
-          <p className="break-all text-xs text-muted">{user.email}</p>
-          <p className="mt-3 text-xs leading-relaxed text-muted">
-            Tus rutinas se guardan en tu cuenta y viajan contigo.
-          </p>
+        <SheetFooter className="border-t border-line p-4">
+          <SheetClose asChild>
+            <Link
+              href="/configuracion"
+              aria-current={pathname === "/configuracion" ? "page" : undefined}
+              className={cn(
+                "flex min-w-0 items-center gap-3 rounded-xl p-3 no-underline hover:bg-sage-light",
+                pathname === "/configuracion" && "bg-sage-light",
+              )}
+            >
+              <span className="grid size-10 shrink-0 place-items-center rounded-full border border-line bg-surface text-sage">
+                <Settings size={19} />
+              </span>
+              <span className="min-w-0">
+                <strong className="block text-sm font-medium">
+                  Configuración
+                </strong>
+                <span className="mt-1 block truncate text-[11px] text-muted">
+                  {user.name || "Mi cuenta"}
+                </span>
+                <span className="mt-0.5 block truncate text-[10px] text-muted">
+                  {user.email}
+                </span>
+              </span>
+            </Link>
+          </SheetClose>
         </SheetFooter>
       </SheetContent>
     </Sheet>
