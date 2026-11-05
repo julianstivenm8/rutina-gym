@@ -32,6 +32,7 @@ El stack acordado para los agentes del proyecto está en [AGENTS.md](AGENTS.md):
 - El día actual siempre conserva color coral, subrayado y la etiqueta «Hoy», aunque se seleccione otro.
 - Cada día es un botón con estado seleccionado y nombre accesible. Admite Tab, Enter, Espacio, flechas izquierda/derecha, Inicio y Fin.
 - En celular, seleccionar un día desplaza al detalle; «Cambiar día» vuelve al calendario.
+- En celular, el encabezado se oculta y la navegación usa una barra inferior con Mi semana, Mis rutinas, Mi cuerpo y Perfil. La semana se recorre horizontalmente y abre con hoy a la vista. Consultar [Navegación en celular](docs/mobile-navigation.md).
 - El acceso con Google y las sesiones se gestionan con Better Auth y Neon. La rutina requiere una sesión válida comprobada en el servidor.
 - Los pesos opcionales por ejercicio se guardan en Neon con su unidad y fecha; el detalle permite ver su evolución. Consultar [Pesos por ejercicio](docs/weights.md).
 - «Mi cuerpo» guarda medidas corporales privadas por fecha, con figuras interactivas de hombre y mujer, datos opcionales, IMC calculado e historial con borrado. Consultar [Mi cuerpo](docs/body.md).

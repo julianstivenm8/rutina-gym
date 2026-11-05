@@ -17,22 +17,36 @@ const body = localFont({
 
 export const metadata: Metadata = {
   title: "Mi rutina · Fuerza + cardio",
-  description: "Tu semana de fuerza, cardio y descanso. Consulta tu entrenamiento de cada día.",
+  description:
+    "Tu semana de fuerza, cardio y descanso. Consulta tu entrenamiento de cada día.",
   robots: { index: false, follow: false },
 };
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  viewportFit: "cover",
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#f6f5ef" },
     { media: "(prefers-color-scheme: dark)", color: "#141c18" },
   ],
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="es" className={display.variable + " " + body.variable + " bg-paper scheme-light-dark data-[theme=light]:scheme-light data-[theme=dark]:scheme-dark scroll-smooth scroll-pt-[22px] mobile:scroll-pt-4 motion-reduce:scroll-auto"}>
-      <body className="bg-paper font-sans text-[14px] text-ink antialiased">{children}</body>
+    <html
+      lang="es"
+      className={
+        display.variable +
+        " " +
+        body.variable +
+        " bg-paper scheme-light-dark data-[theme=light]:scheme-light data-[theme=dark]:scheme-dark scroll-smooth scroll-pt-[22px] mobile:scroll-pt-4 mobile:has-[[data-slot=mobile-navigation]]:scroll-pb-[calc(88px_+_env(safe-area-inset-bottom))] motion-reduce:scroll-auto"
+      }
+    >
+      <body className="bg-paper font-sans text-[14px] text-ink antialiased mobile:pt-[env(safe-area-inset-top)] mobile:pl-[env(safe-area-inset-left)] mobile:pr-[env(safe-area-inset-right)] mobile:has-[[data-slot=mobile-navigation]]:pb-[calc(88px_+_env(safe-area-inset-bottom))]">
+        {children}
+      </body>
     </html>
   );
 }

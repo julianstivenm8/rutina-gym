@@ -1,4 +1,5 @@
 "use client";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -25,6 +26,16 @@ import type { AuthenticatedUser } from "@/lib/auth-types";
 
 export function AppNavigation({ user }: { user: AuthenticatedUser }) {
   const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    const query = window.matchMedia("(max-width: 700px)");
+    const closeOnMobile = () => {
+      if (query.matches) setOpen(false);
+    };
+    closeOnMobile();
+    query.addEventListener("change", closeOnMobile);
+    return () => query.removeEventListener("change", closeOnMobile);
+  }, []);
   const pages = [
     {
       href: "/",
@@ -52,7 +63,7 @@ export function AppNavigation({ user }: { user: AuthenticatedUser }) {
     },
   ];
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button
           variant="ghost"

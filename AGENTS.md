@@ -16,7 +16,7 @@ Este es el stack elegido para el proyecto. Usar cada herramienta cuando la funci
 
 - Priorizar Server Components y mantener las interacciones en componentes cliente acotados.
 - Usar shadcn/ui para nuevos componentes de interfaz y Tailwind para sus estilos. Conservar la paleta salvia, lavanda y coral, las fuentes locales y los temas claro/oscuro.
-- El selector de tema está en el header. El tema inicial sigue al sistema y su elección manual no se almacena en el navegador.
+- El selector de tema está en el header y en Configuración. En celular (hasta 700 px) se oculta el header y se usa la barra inferior; Perfil abre Configuración. El tema inicial sigue al sistema y su elección manual no se almacena en el navegador.
 - Usar Better Auth como fuente de verdad de usuarios y sesiones. No guardar tokens ni duplicar sesiones en Zustand o en almacenamiento del navegador.
 - Verificar la sesión en el servidor al servir rutas y acciones protegidas. Una cookie presente o una comprobación visual del cliente no autentican al usuario.
 - Mantener secretos y conexiones en variables de entorno del servidor. Documentar sus nombres en `.env.example`; nunca incluir credenciales en código, logs o commits.
