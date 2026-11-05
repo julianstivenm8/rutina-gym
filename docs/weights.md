@@ -2,7 +2,7 @@
 
 En el detalle de fuerza, cada ejercicio tiene un campo de peso opcional. Acepta coma o punto y hasta tres decimales, permite kg o lb y solo guarda al pulsar el botón junto al campo. Cero es un valor explícito; un campo vacío no crea un registro.
 
-El campo recupera el último valor guardado. El botón del reloj despliega el registro inicial y los cinco cambios más recientes, con fechas de Colombia. «Ver más» carga otros cinco cada vez, hasta completar el historial. La diferencia respecto al inicio compara ambas cargas en la misma unidad. Los registros anteriores se conservan para las estadísticas futuras, salvo los que el usuario elimine. El contador indica cuántos ejercicios del día tienen una carga registrada.
+El campo recupera el último valor guardado. El botón del reloj despliega el registro inicial y los cinco cambios más recientes, con fechas de Colombia. «Ver más» carga otros cinco cada vez, hasta completar el historial. La diferencia respecto al inicio compara ambas cargas en la misma unidad. Los registros anteriores se conservan para las estadísticas futuras, salvo los que el usuario elimine.
 
 Cada registro tiene un botón de papelera y una confirmación con el peso que se eliminará. Al confirmar, se borra solo ese registro y se recalculan el inicio, el último peso y la diferencia. Si se borra el último registro disponible, el ejercicio vuelve a quedar sin peso. El borrado no cambia un peso que el usuario tenga todavía como borrador en el campo. Un error de conexión permite reintentar la misma eliminación.
 

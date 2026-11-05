@@ -11,7 +11,6 @@ import {
   RotateCcw,
   Save,
   Trash2,
-  Weight,
 } from "lucide-react";
 import {
   formatWeight,
@@ -443,28 +442,11 @@ export function ExerciseWeightList({
   notes?: readonly string[];
   ids?: readonly (string | undefined)[];
 }) {
-  const progress = useWeightProgress((state) => state.progress);
   const ready = useWeightProgress((state) => state.ready);
   const error = useWeightProgress((state) => state.error);
   const load = useWeightProgress((state) => state.load);
-  const count =
-    ids?.filter((id) => id && progress[id]?.recent.length).length ?? 0;
   return (
     <div>
-      <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h3 className="flex items-center gap-2 text-sm font-medium">
-            <Weight size={18} className="text-sage" />
-            Pesos a tu ritmo
-          </h3>
-          <p className="mt-1 text-[11px] leading-relaxed text-muted">
-            Opcionales. Se conservan entre semanas y rutinas.
-          </p>
-        </div>
-        <Badge variant="outline">
-          {count} de {exercises.length} con peso
-        </Badge>
-      </div>
       {error && (
         <Alert variant="destructive" className="mb-3">
           <AlertDescription>
